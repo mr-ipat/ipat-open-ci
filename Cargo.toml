@@ -1,0 +1,23 @@
+[workspace]
+resolver = "2"
+members = [
+  "apps/control-api",
+  "crates/tenant-core",
+  "crates/authz-core",
+  "crates/identity-core",
+  "crates/cwmp-protocol",
+  "crates/cwmp-admission",
+  "apps/cwmp-gateway",
+  "crates/usp-core",
+  "apps/usp-controller",
+  "crates/firewall-policy",
+  "crates/diagnostic-core",
+  "crates/provisioning-core",
+  "crates/routeros-core",
+  "crates/olt-core",
+]
+
+[workspace.package]
+authors = ["Mr. iPat"]
+edition = "2021"
+license = "UNLICENSED"

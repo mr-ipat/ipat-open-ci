@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="robots" content="noindex, nofollow, noarchive">
+  <meta name="referrer" content="no-referrer">
+  <title>IP@ | Laboratorium Operasi Jaringan</title>
+  <link rel="stylesheet" href="/lab/style.css">
+  <script src="/lab/app.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Langsung ke konten</a>
+  <div class="app-shell">
+    <aside class="sidebar" aria-label="Navigasi laboratorium">
+      <div class="brand">
+        <span class="brand-icon" aria-hidden="true">IP<span>@</span></span>
+        <div><strong>iPat</strong><small>Network Operations</small></div>
+      </div>
+      <div class="sidebar-caption">LABORATORIUM</div>
+      <nav aria-label="Halaman informasi laboratorium">
+        <a class="nav-active" href="#overview"><span aria-hidden="true">◈</span> Ringkasan</a>
+        <a href="#modules"><span aria-hidden="true">⬡</span> Modul yang diuji</a>
+        <a href="#device-targets"><span aria-hidden="true">▥</span> Target perangkat</a>
+        <a href="#security"><span aria-hidden="true">◇</span> Gerbang keamanan</a>
+      </nav>
+      <div class="sidebar-spacer"></div>
+      <div class="scope-callout">
+        <div class="scope-marker"></div>
+        <strong>Mode terbatas</strong>
+        <p>Hanya informasi laboratorium. Tidak ada akun, data pelanggan, atau kontrol perangkat.</p>
+      </div>
+      <div class="sidebar-footer">Developed by <strong>Mr. iPat</strong><br>IPAT · Internal Lab</div>
+    </aside>
+    <div class="main-shell">
+      <header class="topbar">
+        <span class="breadcrumbs">Workspace <span>/</span> Laboratorium <span>/</span> Ringkasan</span>
+        <div class="topbar-right"><span class="topbar-lock" aria-hidden="true">●</span> Akses melalui tunnel privat <span class="user-avatar" aria-label="Mode laboratorium">L</span></div>
+      </header>
+      <main id="main">
+        <section id="overview" class="hero" aria-labelledby="page-title">
+          <div class="eyebrow"><span class="green-dot" aria-hidden="true"></span> IPAT LAB CONSOLE <span class="version-tag">R6.8 Private Dashboard Preview</span></div>
+          <h1 id="page-title">Operasional jaringan.<br><span>Dalam satu platform.</span></h1>
+          <p class="hero-description">Pratinjau antarmuka IPAT untuk memvalidasi layanan laboratorium. Tidak terhubung ke OLT, ONT, pelanggan, maupun perangkat produksi.</p>
+          <div class="hero-actions">
+            <button id="refresh" class="btn-primary" type="button">↻ &nbsp;Periksa layanan</button>
+            <a class="btn-outline" href="/lab/dashboard-preview">Pratinjau 3 dashboard <span aria-hidden="true">↗</span></a>
+            <a class="btn-outline" href="/lab/device-workbench">Device Manager · Tambah &amp; Daftar →</a>
+            <a class="btn-outline" href="#security">Status menuju produksi <span aria-hidden="true">↗</span></a>
+          </div>
+        </section>
+        <section class="section-block" aria-label="Ringkasan status">
+          <div class="section-header"><div><span class="section-kicker">SYSTEM OVERVIEW</span><h2>Ringkasan lingkungan</h2></div><span id="checked-at" class="checked-at" aria-live="polite">Belum diperiksa</span></div>
+          <div class="metrics-grid">
+            <article class="metric-card">
+              <div class="metric-head"><span class="metric-icon green" aria-hidden="true">⌁</span><span id="api-badge" class="status-pill checking">Memeriksa</span></div>
+              <p class="metric-label">Control API</p>
+              <p id="api-status" class="metric-value" aria-live="polite">Menghubungkan</p>
+              <p class="metric-note">Pemeriksaan langsung melalui endpoint privat</p>
+            </article>
+            <article class="metric-card">
+              <div class="metric-head"><span class="metric-icon blue" aria-hidden="true">⬡</span><span class="status-pill lab">Simulasi</span></div>
+              <p class="metric-label">Native USP Controller</p>
+              <p class="metric-value">Lab only</p>
+              <p class="metric-note">Health stub; protokol TR-369 belum operasional</p>
+            </article>
+            <article class="metric-card">
+              <div class="metric-head"><span class="metric-icon amber" aria-hidden="true">◇</span><span class="status-pill pending">Belum aktif</span></div>
+              <p class="metric-label">Akses produksi</p>
+              <p class="metric-value">Tertutup</p>
+              <p class="metric-note">Menunggu autentikasi, pemulihan, dan jaringan aman</p>
+            </article>
+          </div>
+        </section>
+        <section id="device-targets" class="section-block device-targets" aria-labelledby="device-targets-title">
+          <div class="section-header"><div><span class="section-kicker">HARDWARE TEST READINESS</span><h2 id="device-targets-title">Daftar target perangkat</h2></div><span class="subtle-tag">BUKAN PERANGKAT TERHUBUNG</span></div>
+          <div class="device-warning"><div><strong><span id="candidate-count">8</span> target pengujian disiapkan · <span id="physical-count">0</span> perangkat fisik terdaftar</strong><p>Daftar ini berasal dari rencana pengujian. Belum ada klaim kompatibilitas, discovery jaringan, kredensial, atau hasil uji perangkat fisik.</p></div><span class="step-state">Menunggu data lab</span></div>
+          <div id="router-security-alert" class="device-warning" role="status" hidden><div><strong>DEV-08: akses SSH diblokir — identitas host berubah</strong><p>Pemeriksaan terakhir menemukan kunci SSH berbeda dari catatan tepercaya. Login, pembacaan perangkat asli, dan konfigurasi tidak dilakukan. Verifikasi sidik jari melalui LAN independen diperlukan sebelum pengujian fisik; informasi ini bukan status koneksi langsung.</p></div><span class="step-state">Menunggu bukti independen</span></div>
+          <div class="device-list-container"><table class="device-table"><caption class="sr-only">Target laboratorium yang belum didaftarkan secara fisik</caption><thead><tr><th scope="col">ID</th><th scope="col">Jenis</th><th scope="col">Vendor / keluarga</th><th scope="col">Rencana uji</th><th scope="col">Status</th></tr></thead><tbody id="target-rows"><tr><td colspan="5">Memuat rencana perangkat...</td></tr></tbody></table></div>
+          <div class="device-bottom"><p id="target-feedback" role="status" aria-live="polite">Informasi calon perangkat, bukan telemetri langsung.</p><a href="https://github.com/mr-ipat/ipat/blob/main/docs/DEVICE_MATRIX.md" target="_blank" rel="noopener noreferrer">Persyaratan model dan firmware ↗</a></div>
+        </section>
+        <div class="content-grid">
+          <section id="modules" class="panel" aria-labelledby="modules-title">
+            <div class="panel-heading"><div><span class="section-kicker">PLATFORM MODULES</span><h2 id="modules-title">Modul yang telah diuji</h2></div><span class="subtle-tag">LAB</span></div>
+            <div class="module-row"><div class="module-icon blue" aria-hidden="true">⟡</div><div><strong>Original Rust Control API</strong><p>Endpoint kesehatan dan penolakan akses tanpa autentikasi.</p></div><span class="module-state">Lab</span></div>
+            <div class="module-row"><div class="module-icon purple" aria-hidden="true">◈</div><div><strong>Native USP Controller Stub</strong><p>Proses terpisah; belum tersedia MQTT, identitas agent, atau RPC.</p></div><span class="module-state">Lab</span></div>
+            <div class="module-row"><div class="module-icon green" aria-hidden="true">▤</div><div><strong>K3s &amp; Helm</strong><p>Diuji pada Ubuntu 26.04 terisolasi; bukan cluster VPS utama.</p></div><span class="module-state">Teruji</span></div>
+            <div class="module-row"><div class="module-icon amber" aria-hidden="true">♧</div><div><strong>PostgreSQL</strong><p>Migrasi dan restore sintetis diuji; layanan produksi belum aktif.</p></div><span class="module-state">Simulasi</span></div>
+          </section>
+          <section id="security" class="panel readiness-panel" aria-labelledby="security-title">
+            <div class="panel-heading"><div><span class="section-kicker">RELEASE READINESS</span><h2 id="security-title">Menuju akses web publik</h2></div></div>
+            <div class="readiness-banner"><strong>Produksi belum dibuka</strong><p>Antarmuka ini hanya dapat diakses melalui tunnel SSH lokal.</p></div>
+            <ol class="readiness-list">
+              <li><span class="step-dot">1</span><div><strong>Pemulihan VPS independen</strong><p>Konsol alternatif dan pemulihan server lengkap.</p></div><span class="step-state">Belum</span></li>
+              <li><span class="step-dot">2</span><div><strong>Perimeter IPv4/IPv6 privat</strong><p>Isolasi khusus VPS tanpa mengubah grup bersama.</p></div><span class="step-state">Belum</span></li>
+              <li><span class="step-dot">3</span><div><strong>Identitas &amp; isolasi tenant</strong><p>OIDC/MFA, izin backend dan keamanan domain.</p></div><span class="step-state">Belum</span></li>
+              <li><span class="step-dot">4</span><div><strong>K3s &amp; database produksi</strong><p>Deployment yang disetujui beserta HA/PITR.</p></div><span class="step-state">Belum</span></li>
+            </ol>
+            <a class="docs-link" href="https://github.com/mr-ipat/ipat/blob/main/docs/PROJECT_STATUS.md" target="_blank" rel="noopener noreferrer">Lihat status proyek <span aria-hidden="true">↗</span></a>
+          </section>
+        </div>
+        <footer class="main-footer"><span>© IPAT · Mr. iPat</span><span>Data pelanggan: tidak dimuat &nbsp;•&nbsp; Kontrol perangkat: dinonaktifkan</span></footer>
+      </main>
+    </div>
+  </div>
+</body>
+</html>

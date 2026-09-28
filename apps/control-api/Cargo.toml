@@ -1,0 +1,26 @@
+[package]
+name = "control-api"
+version = "0.1.0"
+edition.workspace = true
+authors.workspace = true
+publish = false
+
+[dependencies]
+axum = "0.8"
+identity-core = { path = "../../crates/identity-core" }
+libc = "=0.2.189"
+tokio = { version = "1", features = ["macros", "rt-multi-thread", "net"] }
+authz-core = { path = "../../crates/authz-core" }
+tenant-core = { path = "../../crates/tenant-core" }
+tokio-postgres = { version = "=0.7.13", features = ["with-uuid-1"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+base64 = "=0.22.1"
+uuid = "=1.18.1"
+subtle = "=2.6.1"
+
+[dev-dependencies]
+sha2 = "=0.11.0"
+tower = { version = "0.5", features = ["util"] }
+jsonwebtoken = { version = "=11.1.0", default-features = false, features = ["aws_lc_rs", "use_pem"] }
+tempfile = "=3.23.0"

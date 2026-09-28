@@ -1,0 +1,93 @@
+{
+  "schema": 1,
+  "catalog_mode": "planned_targets_only",
+  "source": "docs/DEVICE_MATRIX.md",
+  "physical_devices_enrolled": 0,
+  "physical_interoperability_verified": 0,
+  "network_discovery_enabled": false,
+  "compatibility_claim": false,
+  "targets": [
+    {
+      "id": "DEV-01",
+      "category": "OLT",
+      "vendor": "ZTE",
+      "family": "C320",
+      "model_detail": "Line card / board belum dicatat",
+      "firmware": "Belum dicatat",
+      "test_plan": "Inventaris, PON/ONU, alarm — read-only",
+      "status": "awaiting_metadata"
+    },
+    {
+      "id": "DEV-02",
+      "category": "OLT",
+      "vendor": "C-DATA",
+      "family": "Model belum dicatat",
+      "model_detail": "Exact model / board belum dicatat",
+      "firmware": "Belum dicatat",
+      "test_plan": "Inventaris dan status optik — read-only",
+      "status": "awaiting_metadata"
+    },
+    {
+      "id": "DEV-03",
+      "category": "ONT",
+      "vendor": "VSOL",
+      "family": "Model belum dicatat",
+      "model_detail": "Exact model / HW rev belum dicatat",
+      "firmware": "Belum dicatat",
+      "test_plan": "CWMP Inform terautentikasi; read-only RPC",
+      "status": "awaiting_metadata"
+    },
+    {
+      "id": "DEV-04",
+      "category": "ONT",
+      "vendor": "ZTE",
+      "family": "Model belum dicatat",
+      "model_detail": "Exact model / HW rev belum dicatat",
+      "firmware": "Belum dicatat",
+      "test_plan": "CWMP Inform terautentikasi; read-only RPC",
+      "status": "awaiting_metadata"
+    },
+    {
+      "id": "DEV-05",
+      "category": "ROUTER_DISTRIBUTION",
+      "vendor": "MikroTik",
+      "family": "x86",
+      "model_detail": "Exact host / RouterOS belum dicatat",
+      "firmware": "Belum dicatat",
+      "test_plan": "Inventaris / PPPoE test tanpa perubahan",
+      "status": "awaiting_metadata"
+    },
+    {
+      "id": "DEV-06",
+      "category": "ROUTER_DISTRIBUTION",
+      "vendor": "MikroTik",
+      "family": "CCR",
+      "model_detail": "Exact CCR / HW rev belum dicatat",
+      "firmware": "Belum dicatat",
+      "test_plan": "Inventaris / PPPoE test tanpa perubahan",
+      "status": "awaiting_metadata"
+    },
+    {
+      "id": "DEV-07",
+      "category": "ROUTER_DISTRIBUTION",
+      "vendor": "MikroTik",
+      "family": "RB",
+      "model_detail": "Exact RB / RouterOS belum dicatat",
+      "firmware": "Belum dicatat",
+      "test_plan": "Inventaris / PPPoE test tanpa perubahan",
+      "status": "awaiting_metadata"
+    },
+    {
+      "id": "DEV-08",
+      "category": "CUSTOMER_ROUTER",
+      "vendor": "MikroTik",
+      "family": "RB951Ui-2HnD",
+      "model_detail": "RB951Ui-2HnD (dilaporkan pemilik; belum dibaca melalui perangkat)",
+      "firmware": "RouterOS 7.23.7 (dilaporkan pemilik; belum diverifikasi)",
+      "test_plan": "SSH read-only candidate: host key changed; independent direct-LAN identity verification required before login (HTTPS remains separately gated)",
+      "status": "operator_reported_pending_verification",
+      "access_gate": "ssh_host_key_changed_unverified"
+    }
+  ],
+  "catalog_note": "STATIC LAB SNAPSHOT ONLY. SSH identity gate is from a previous read-only check, not a live connection or real device record."
+}

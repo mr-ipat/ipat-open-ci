@@ -1,0 +1,63 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ipat-control-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ipat-control-api
+  template:
+    metadata:
+      labels:
+        app: ipat-control-api
+    spec:
+      serviceAccountName: ipat-control-api
+      automountServiceAccountToken: false
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 65532
+        runAsGroup: 65532
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: control-api
+          image: {{ .Values.controlApi.image | quote }}
+          imagePullPolicy: Never
+          env:
+            - name: IPAT_RUN_K3S_LAB
+              value: "1"
+          ports:
+            - name: http
+              containerPort: {{ .Values.controlApi.port }}
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: http
+            periodSeconds: 3
+            failureThreshold: 20
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: http
+            periodSeconds: 10
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ipat-control-api
+spec:
+  type: ClusterIP
+  selector:
+    app: ipat-control-api
+  ports:
+    - name: http
+      port: {{ .Values.controlApi.port }}
+      targetPort: http

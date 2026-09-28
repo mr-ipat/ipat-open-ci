@@ -1,0 +1,42 @@
+# IPAT R5.8 — health-only Rust applications on isolated disposable K3s
+
+**Developer:** Mr. iPat. **Status:** test/review pending until real GitHub CI and subsequent merged-source verification. Production activation: **NO_GO**.
+
+## Scope, architecture and security boundary
+
+R5.6 already proved a real checksum-pinned single-node Ubuntu 26.04 K3s control plane and pod DNS in disposable GitHub Actions. R5.7 separately proved a systemd K3s embedded-etcd cross-VM snapshot+original-token restore and deterministic rollback of an IPAT-owned nftables table. Neither milestone was executed on the actual customer-facing VPS. R5.8 now tests *packaging* the existing original Rust Control API and independent native USP Controller health-only stub as separate, non-root containers. It does **not** implement authenticated OIDC, native USP Record/MTP, CWMP HTTPS device enrollment, PostgreSQL runtime, tenant menus or physical vendor interoperability.
+
+The existing apps normally bind **only** `127.0.0.1` for their offline/synthetic tests. On the isolated disposable runner, a specific environment flag changes their listeners to the pod's local wildcard address so a **ClusterIP** service can reach them. A second USP-specific flag is still required or the stub exits. Never provide either flag to a public deployment or claim a USP data interface from `/healthz`.
+
+The minimal OCI images copy the statically linked musl Rust release binaries into `scratch`, run as non-root UID/GID 65532, have no OS shell or embedded secrets and are imported into that runner's private K3s containerd. **No external registry push, Ingress, LoadBalancer, NodePort, hostNetwork, host volumes or public listener** is present. Kubernetes Deployment uses read-only root filesystem, dropped capabilities, default seccomp, no token mount, disabled privilege escalation and bounded resources. Both synthetic health-only apps have an explicit ingress-only-from-labeled-same-namespace-smoke-pod and empty egress policy; policies still require independent enforcement testing by the selected CNI before future production claims. Health-only responses are not production security checks.
+
+## Paths and verification
+
+- Rust bind changes: `apps/control-api/src/main.rs`, `apps/usp-controller/src/main.rs`; default loopback and fake tenant denial have unit tests.
+- Reproducible minimal binaries: `deploy/container/control-api.Dockerfile` and `deploy/container/usp-controller.Dockerfile` using Rust `1.98.1` and `x86_64-unknown-linux-musl` in disposable CI.
+- Kubernetes manifests: `deploy/helm/ipat-lab` (two Deployments, two ClusterIP Services, two no-token ServiceAccounts, two NetworkPolicies); deliberately **no storage, gateway, Ingress or service public exposure**.
+- Fail-closed CI launcher: `deploy/scripts/lab/r58/app-smoke.sh`, called only after R5.6's real K3s Node/DNS/etcd snapshot steps with `IPAT_R58_SMOKE=1`. It refuses non-disposable/non-Ubuntu runner contexts and guards the temporary K3s data directory; this opt-in is an additional error-prevention control, not an independent cryptographic identity proof.
+- Security-focused rendered manifest validator: `deploy/scripts/lab/r58/verify-rendered.py`. It rejects unexpected resources, external services, host privileges, arbitrary app environments/volumes, uncontrolled network policy changes and nonlocal image fetching. In disposable CI, `test_r58_manifest.py` runs against the actual Helm-rendered manifests, including deliberate negative mutations. `test_r58_review.py` runs standard-library source and negative-launcher tests in standard Rust/static CI.
+
+### Real disposable acceptance criteria (must be evidenced from actual CI)
+
+1. Existing R5.6 pinned K3s node, private RFC1918 control-plane API, actual CoreDNS pod DNS and embedded-etcd snapshot all PASS; no live VPS mutation.
+2. CI verifies the published pinned Helm archive SHA-256 and uses pinned Rust `1.98.1` with musl-target compiler tools; Helm lint and generated manifest validation pass, including intentionally unsafe mutation rejection.
+3. Both Rust images are built and imported **only** into disposable K3s containerd and have both actual pods `Ready` as isolated non-root read-only containers.
+4. A same-namespace approved smoke pod receives correct Control API and synthetic USP health responses, while the synthetic `/v1/devices/...` request returns **401 Unauthorized** without OIDC. A different same-namespace unapproved pod must independently resolve the service using cluster DNS but be denied health endpoint access by the actual K3s network-policy controller. No physical equipment or real customer data is read or written.
+5. After review/merge, private GitHub/Mac/VPS source SHAs match, actual nonprivileged VPS Rust/static regressions succeed and an exact merged-source encrypted Restic backup plus selected-root snapshot are separately recovered.
+
+Do not infer a successful real test from code paths alone. Every failed job or correction belongs in `docs/PROJECT_STATUS.md` or the tracked PR discussion with the exact CI run ID, change, and remaining restrictions.
+
+## Production K3s remains a separate change transaction
+
+The **actual** Ubuntu 26.04 VPS is already known to have active SSH but neither K3s nor PostgreSQL installed or active. Even if the health-only R5.8 disposable CI passes, the actual production host still requires successful independently accessed out-of-band rescue, an independently rebuilt *complete* host/config/datastore encrypted restore, effective **dedicated** IPv4+IPv6 ingress isolation without editing a shared provider security group, approved ADR-017 CNI/private cluster network and ADR-018 if a native host firewall will be activated. PostgreSQL production needs independently validated external PITR and HA. Do not reuse R5.8 Helm chart to publicly expose synthetic unauthenticated services.
+
+
+## Verified R5.8 PR merge and independent deployment evidence (2026-09-26)
+
+- Feature [PR #47](https://github.com/mr-ipat/ipat/pull/47) merged to private `main` `34ba659194da35c7033d3d1f4799e1997de618df`. Actual feature CI `36208247637` SUCCESS in all four jobs, including a real ephemeral Ubuntu 26.04 K3s server and PostgreSQL synthetic integration/physical recovery CI; earlier failed intermediate runs and their reasons are retained in `PROJECT_STATUS.md`.
+- Actual disposable K3s CI sequentially passed upstream-pinned SHA-256 K3s binary, Node Ready, private RFC1918 API listener, actual CoreDNS and BusyBox DNS, embedded-etcd snapshot; musl scratch Rust OCI image build, isolated containerd import and normalized image references; strict Helm-rendered no-public-Service and non-root capability-free pod contract; both real app Deployments and readiness; positive cluster-only health and actual anonymous `/v1/devices/...` HTTP 401; **an unauthorized same-namespace pod's attempted application health ingress was actively denied by the actual network-policy controller**. This is lab-only health routing and deliberately not native TR-369 transport, trusted OIDC, commercial tenant network-policy proof or high-availability orchestration.
+- Source synchronized byte-identically from reviewed `main` across private GitHub, authorized Mac and actual Ubuntu 26.04.1 non-root checkout. Actual Ubuntu final reviewed feature source independently passed Rust formatting, **78/78 locked/offline Rust tests**, **42** existing lab static, **six** R5.7 static, **six** R5.8 static, **14** DB static and **five** production admission static checks. Actual VPS K3s/PostgreSQL/nftables services remained INACTIVE.
+- Mac FileVault ON. New encrypted exact-feature-merge source Restic snapshot `8fd042aa` independently matched isolated SHA-256 restoration; separately held selected privileged-root-readable snapshot `abaa9827` separately isolated-restored with sudoers/SSH config evidence; `restic check --read-data` PASS, plaintext restored files removed. Neither selected snapshot constitutes independent entire-server recovery, offsite K3s datastore/server-token backup or production PostgreSQL PITR.
+- Post-merge feature main CI `36209497564` returned SUCCESS in all four jobs, including repeating the real disposable private K3s application and ingress-denial test. The subsequent evidence-only docs merge will change the final verification hash and requires a new exact-docs-merge-source encrypted snapshot. Those final SHA/snapshot/run identifiers belong in the docs PR discussion to avoid recursive evidence commits.

@@ -1,0 +1,11 @@
+[package]
+name = "routeros-core"
+version = "0.1.0"
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+publish = false
+
+[dependencies]
+serde = "1"
+serde_json = "1"

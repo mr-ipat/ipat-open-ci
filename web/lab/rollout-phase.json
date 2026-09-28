@@ -1,0 +1,16 @@
+{
+  "schema": 1,
+  "phase": "private_single_endpoint_device_lab",
+  "source": "ADR-020 / docs/PRD.md FR-004 commercial",
+  "domain_verification_deferred": true,
+  "custom_domains_enabled": false,
+  "public_tenant_hostnames_enabled": false,
+  "private_loopback_transport_only": true,
+  "tenant_isolation_mandatory": true,
+  "tenant_isolation_end_to_end_verified": false,
+  "authenticated_tenant_data_apis_enabled": false,
+  "physical_device_connected": false,
+  "device_reads_approved": false,
+  "firmware_updates_enabled": false,
+  "gate_for_next_step": "owner_reviewed_isolated_C320_exact_identity_and_first_read"
+}

@@ -1,0 +1,40 @@
+# Build artifacts
+/target/
+**/node_modules/
+**/.next/
+**/dist/
+.DS_Store
+
+# Credentials and local runtime
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+*.kubeconfig
+kubeconfig
+.secrets/
+secrets/
+!docs/SECURITY.md
+
+# Device exports / local backup artifacts
+*.backup
+*.rsc
+*.sql
+# Reviewed, synthetic schema migration source is code, not a device export.
+!/deploy/db/migrations/*.sql
+*.dump
+*.pcap
+*.pcapng
+*.tar.gz
+*.zip
+
+# Editors
+.idea/
+.vscode/
+
+# Python test artifacts
+**/__pycache__/
+*.py[cod]

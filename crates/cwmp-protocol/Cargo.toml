@@ -1,0 +1,9 @@
+[package]
+name = "cwmp-protocol"
+version = "0.1.0"
+edition.workspace = true
+authors.workspace = true
+publish = false
+
+[dependencies]
+roxmltree = "=0.21.1"

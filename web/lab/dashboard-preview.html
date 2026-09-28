@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="robots" content="noindex,nofollow,noarchive">
+  <meta name="referrer" content="no-referrer">
+  <title>IP@ | Pratinjau Dashboard Admin, Tenant &amp; NOC</title>
+  <link rel="stylesheet" href="/lab/dashboard-preview.css">
+  <script src="/lab/dashboard-preview.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Langsung ke dashboard</a>
+  <div class="top-warning" role="note"><strong>LABORATORIUM PRIVAT</strong> · Data contoh sintetis · Belum ada login/OIDC, perangkat aktif atau API operasional. Pemilihan tampilan bukan autentikasi.</div>
+  <section class="prd-deviation-alert" role="alert" aria-label="Penyimpangan dan target PRD yang belum selesai">
+    <strong>PERINGATAN BESAR — TARGET PRD BELUM TERPENUHI</strong>
+    <p>OLT ZTE C320 <b>BELUM TERHUBUNG</b>. Uji fisik TC-OLT-01 <b>BELUM DIJALANKAN</b>. Pembaruan firmware <b>DILARANG</b> sampai model, semua kartu, build firmware, backup/restore, persetujuan terpisah dan rollback diverifikasi. ACS, login tenant dan NOC nyata juga belum siap produksi.</p>
+    <a href="https://github.com/mr-ipat/ipat/blob/main/docs/PRD_DEVIATIONS_R71.md" target="_blank" rel="noopener noreferrer">Lihat daftar penyimpangan PRD dan syarat pengujian →</a>
+  </section>
+  <div class="layout">
+    <aside class="sidebar" aria-label="Navigasi pratinjau">
+      <a class="brand" href="/lab" aria-label="Kembali ke console IPAT">
+        <span class="brand-mark">IP<span>@</span></span>
+        <span><strong>iPat</strong><small>NETWORK OPERATIONS</small></span>
+      </a>
+      <div class="divider"></div>
+      <p class="muted cap">WORKSPACE SIMULASI</p>
+      <div class="workspace-picker">
+        <label for="workspace">Lihat rancangan dashboard</label>
+        <select id="workspace" aria-describedby="workspace-warning">
+          <option value="platform">Platform Admin · IPAT</option>
+          <option value="tenant">Tenant Admin · Contoh ISP</option>
+          <option value="operations">Operasional · NOC contoh</option>
+        </select>
+        <p id="workspace-warning">Pengalih ini hanya mengganti tampilan data contoh. Tidak memberikan hak akses.</p>
+      </div>
+      <p class="muted cap">NAVIGASI BERDASARKAN RANCANGAN PERAN</p>
+      <nav id="demo-nav" aria-label="Navigasi demonstrasi" class="nav-list">
+        <span class="muted">Memuat menu pratinjau...</span>
+      </nav>
+      <div class="sidebar-fill"></div>
+      <div class="access-panel">
+        <span class="status-dot"></span><strong>Mode baca dan simulasi</strong>
+        <p>Operasi jaringan, ekspor, penagihan dan perubahan akun sengaja tidak tersedia.</p>
+      </div>
+      <p class="developer">Developed by <strong>Mr. iPat</strong><br>IPAT · Internal Preview R6.8</p>
+    </aside>
+    <div class="main">
+      <header class="topbar">
+        <div class="breadcrumbs">IPAT <span>/</span> <span id="breadcrumb">Platform Admin</span> <span>/</span> Overview</div>
+        <div class="top-controls"><span class="private-badge">● SSH PRIVATE PREVIEW</span><span class="user">LAB</span></div>
+      </header>
+      <main id="main">
+        <section class="page-head">
+          <div class="page-eyebrow"><span class="tiny-dot"></span> PRODUCT EXPERIENCE · DESIGN VALIDATION</div>
+          <h1 id="page-title">Platform Admin <em>Dashboard</em></h1>
+          <p id="page-description" class="lead">Rancangan pemantauan seluruh perusahaan di platform SaaS IPAT. Belum menggunakan data tenant asli.</p>
+          <div class="page-actions">
+            <button id="check" type="button" class="action-primary">↻ Periksa lingkungan privat</button>
+            <a href="/lab/device-workbench" class="action-primary">＋ Tambah &amp; kelola perangkat →</a>
+            <span class="ghost-label" id="checked" role="status" aria-live="polite">Belum diperiksa</span>
+          </div>
+        </section>
+        <section aria-label="Pemeriksaan keamanan laboratorium" class="safety-strip">
+          <div><span class="dot amber"></span><strong>Keamanan tetap aktif</strong><p>Semua endpoint perusahaan sesungguhnya ditolak tanpa identitas yang diverifikasi.</p></div>
+          <span class="no-go">PRODUKSI · NO_GO</span>
+        </section>
+        <section class="rollout-phase" aria-label="Urutan rilis dan batas isolasi tenant">
+          <div>
+            <strong>TAHAP LAB PRIVAT · CUSTOM DOMAIN DITUNDA</strong>
+            <p>Subdomain perusahaan, custom domain dan sesi lintas domain masuk tahap komersial setelah uji sistem inti.
+            <b>ISOLASI DATA TENANT TIDAK BOLEH DITUNDA</b> sebelum API perusahaan atau data riil diaktifkan.</p>
+            <span id="rollout-status" role="status" aria-live="polite">Kondisi fase backend belum diverifikasi</span>
+          </div>
+          <span class="no-go">DOMAIN PUBLIK TERKUNCI</span>
+        </section>
+        <section id="overview" class="section">
+          <div class="section-header"><div><span class="eyebrow">OVERVIEW</span><h2 id="overview-title">Platform at a glance</h2></div><span class="subtle">SIMULASI · BUKAN TELEMETRI</span></div>
+          <div id="metric-grid" class="metric-grid" aria-label="Metrik demonstrasi"></div>
+        </section>
+        <div class="content-grid">
+          <section id="focus" class="panel">
+            <div class="section-header"><div><span class="eyebrow">WORKSPACE</span><h2 id="focus-title">Prioritas platform</h2></div><span class="outline-tag">READ-ONLY</span></div>
+            <p class="panel-intro" id="focus-intro">Kartu dan aktivitas yang direncanakan untuk peran ini.</p>
+            <div id="focus-rows" class="focus-rows"></div>
+          </section>
+          <section id="readiness" class="panel">
+            <div class="section-header"><div><span class="eyebrow">RELEASE GATES</span><h2>Kesiapan implementasi</h2></div></div>
+            <div class="readiness">
+              <span class="eyebrow amber-text">MILESTONE KEAMANAN</span>
+              <strong>Dasar ACS berkembang, belum customer-ready.</strong>
+              <p>mTLS sintetis sudah diuji, tetapi login pengguna, pendaftaran ONT dan kontrol tenant nyata masih belum tersedia.</p>
+            </div>
+            <ul class="gate-list">
+              <li><span>01</span> Login OIDC/MFA dan role terverifikasi <b>Belum</b></li>
+              <li><span>02</span> Isolasi dan persetujuan per tenant <b>Belum</b></li>
+              <li><span>03</span> ACS: sertifikat ke identitas ONT <b>Belum</b></li>
+              <li><span>04</span> Uji perangkat dan recovery langsung <b>Belum</b></li>
+            </ul>
+            <h3 class="gap-heading">KESESUAIAN PRD · FITUR BELUM SELESAI</h3>
+            <p class="gap-explanation">Berikut gap untuk desain workspace yang dipilih. Ini bukan status pengujian live atau izin akses.</p>
+            <ul id="prd-gap-list" class="prd-gap-list" aria-label="Gap PRD berdasarkan workspace"></ul>
+            <a class="inline-link" href="https://github.com/mr-ipat/ipat/blob/main/docs/PRODUCT_READINESS_R67.md" rel="noopener noreferrer" target="_blank">Baca status produk ↗</a>
+          </section>
+        </div>
+        <section class="section info-section" id="role-scope">
+          <div class="section-header"><div><span class="eyebrow">ACCESS DESIGN</span><h2 id="scope-title">Rancangan batas akses</h2></div></div>
+          <div class="info-grid">
+            <div class="info-cell"><small>AKSES MENU</small><p id="scope-menu">Menu dalam pratinjau berubah menurut peran.</p></div>
+            <div class="info-cell"><small>SUMBER IDENTITAS</small><p>Belum ada. OIDC/MFA dan pemeriksaan database wajib sebelum produksi.</p></div>
+            <div class="info-cell"><small>API &amp; DATA</small><p>API nyata selalu menolak identitas dari header atau pemilihan peran di browser.</p></div>
+          </div>
+        </section>
+        <section class="section" id="device-readiness">
+          <div class="section-header"><div><span class="eyebrow">DEVICE READINESS</span><h2>Target perangkat laboratorium</h2></div></div>
+          <div class="device-panel"><div><strong id="device-summary">Menunggu pemeriksaan katalog</strong><p>Rencana vendor bukan perangkat yang sudah ditemukan dan bukan hasil interoperabilitas.</p></div><span id="device-badge" class="outline-tag">BELUM TERVERIFIKASI</span></div>
+        </section>
+        <footer><span>IPAT · Developed by Mr. iPat</span><span>Semua ilustrasi sengaja tidak memuat pelanggan, secret, atau live device.</span></footer>
+      </main>
+    </div>
+  </div>
+</body>
+</html>

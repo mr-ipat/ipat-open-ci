@@ -1,0 +1,15 @@
+[package]
+name = "authz-core"
+version = "0.1.0"
+edition.workspace = true
+authors.workspace = true
+publish = false
+
+[dependencies]
+tenant-core = { path = "../tenant-core" }
+identity-core = { path = "../identity-core" }
+
+[dev-dependencies]
+jsonwebtoken = { version = "=11.1.0", default-features = false, features = ["aws_lc_rs", "use_pem"] }
+serde_json = "1"
+tempfile = "=3.23.0"

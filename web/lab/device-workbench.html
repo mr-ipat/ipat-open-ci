@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="robots" content="noindex,nofollow,noarchive">
+  <meta name="referrer" content="no-referrer">
+  <title>IPAT | Device Manager · Adoption & Inventory</title>
+  <link rel="stylesheet" href="/lab/device-workbench.css">
+  <script src="/lab/device-workbench.js" defer></script>
+</head>
+<body>
+<a href="#main" class="skip">Ke konten</a>
+<div class="alert" role="alert"><strong>PERINGATAN PRD — BELUM SIAP ADOPSI PERANGKAT NYATA</strong>
+  Dashboard di halaman ini adalah laboratorium interaktif, bukan database ISP produksi. Tambah/hapus di sini hanya membuat data sintetis dalam memori server; restart menghapusnya. Status perangkat nyata, login MFA, adopsi OLT/ONT, SNMP/SSH/TR-069/USP serta firmware belum diaktifkan.
+</div>
+<div class="shell">
+  <aside class="sidebar" aria-label="Navigasi">
+    <a class="brand" href="/lab/dashboard-preview"><span class="brand-icon">IP<span>@</span></span>
+      <span><strong>iPat</strong><small>NETWORK OPERATIONS</small></span></a>
+    <div class="sidelabel">LAB DEVICE WORKSPACE</div>
+    <nav><a href="/lab/dashboard-preview">◈ &nbsp; Semua dashboard</a>
+      <a class="active" href="/lab/device-workbench" aria-current="page">▦ &nbsp; Device Manager</a>
+      <a href="#connections">⛨ &nbsp; Koneksi & tunnel</a>
+      <a href="#register">＋ &nbsp; Tambah kandidat</a>
+      <a href="#inventory">☷ &nbsp; Daftar perangkat</a>
+      <a href="#readiness">◈ &nbsp; Adopsi & status</a>
+    </nav>
+    <div class="sidebottom"><strong>LABORATORIUM PRIVAT</strong><p>Belum ada perangkat diadopsi. Kandidat DEV-01 pernah menjawab SSH tanpa autentikasi, tetapi identitasnya belum terverifikasi. Jangan isi serial, alamat IP asli atau kredensial di formulir demo.</p></div>
+    <p class="copyright">IPAT · Developed by Mr. iPat</p>
+  </aside>
+  <div class="main">
+    <header class="topbar"><span>IPAT / Inventory / <b>Device Manager</b></span>
+      <span class="env">● SSH PRIVATE · DEMO ONLY</span></header>
+    <main id="main">
+      <div class="heading"><span class="eyebrow">DEVICE OPERATIONS</span>
+        <h1>Kelola perangkat <em>sebelum adopsi.</em></h1>
+        <p>Daftarkan kandidat virtual, lihat inventaris dan status verifikasi. Jalur kandidat PostgreSQL terpisah telah disiapkan untuk proses persetujuan operator ketika identitas yang terpercaya tersedia.</p>
+      </div>
+      <div class="metric-row" aria-label="Ringkasan perangkat">
+        <article class="stat"><small>KANDIDAT DEMO</small><strong id="candidate-count">0</strong><span>Memori laboratorium</span></article>
+        <article class="stat"><small>PERANGKAT NYATA DIADOPSI</small><strong>0</strong><span>SSH kandidat teramati; belum terverifikasi</span></article>
+        <article class="stat"><small>TERVERIFIKASI</small><strong>0</strong><span>Tanpa telemetri asli</span></article>
+        <article class="stat"><small>KESIAPAN ADOPSI</small><strong class="amber">Terbatas</strong><span>Menunggu MFA dan bukti vendor</span></article>
+      </div>
+      <section class="panel" aria-labelledby="physical-network-heading">
+        <div class="section-top"><div><span class="eyebrow">BUKTI HISTORIS, BUKAN TELEMETRI LIVE</span><h2 id="physical-network-heading">Jalur manajemen OLT kandidat DEV-01</h2></div><span class="pill amber-pill">BELUM ADOPSI</span></div>
+        <p>28 September 2026, sekitar 09.52 WIB: dari Mac operator, port manajemen yang diizinkan dapat dihubungi dan mengirim negosiasi Telnet. Negosiasi terbatas sebelumnya menampilkan penanda ZTE yang belum terautentikasi. Dari VPS IPAT, jalur yang sama mengalami timeout.</p>
+        <p><strong>Pemeriksaan terbaru:</strong> pada 28 September 2026, Mac operator juga memperoleh banner SSH privat ZTE_SSH.1.0 dan fingerprint RSA yang belum diverifikasi secara independen. Koneksi tersebut tidak menggunakan kredensial atau perintah OLT.</p>
+        <p><strong>Perhatian:</strong> catatan ini hanya bukti jaringan sesaat. OLT C320, firmware, identitas server dan status online perangkat BELUM terverifikasi. Tidak ada login, kata sandi, perubahan konfigurasi atau pembacaan OLT. Akses Telnet publik tidak aman untuk kredensial; gunakan jaringan manajemen privat terenkripsi atau protokol aman yang identitasnya telah diverifikasi.</p>
+      </section>
+      <section id="physical-readiness" class="panel" aria-labelledby="physical-readiness-title">
+        <div class="section-top"><div><span class="eyebrow">BUKTI FISIK / HISTORIS, BUKAN LIVE TELEMETRY</span><h2 id="physical-readiness-title">Pra-adopsi C320 — pemeriksaan tanpa kredensial</h2></div><span class="pill amber-pill">BELUM DIADOPSI</span></div>
+        <p>Hasil pemeriksaan SSH privat dicatat terpisah dari inventaris. Fingerprint yang ditemukan melalui koneksi belum membuktikan identitas OLT sampai diverifikasi melalui konsol/inventaris tepercaya.</p>
+        <p id="physical-evidence-status" role="status" aria-live="polite">Memverifikasi bukti lokal yang tersimpan...</p>
+        <div id="physical-evidence-gates" class="steps" aria-label="Syarat pembacaan perangkat asli"></div>
+        <div class="separation"><b>JANGAN JALANKAN ADOPSI OTOMATIS</b><p>OLT diasumsikan melayani pelanggan aktif. Tidak ada tombol login, update firmware, atau penerapan tunnel dari pratinjau ini.</p></div>
+      </section>
+      <section id="connections" class="panel" aria-labelledby="connections-title">
+        <div class="section-top"><div><span class="eyebrow">NETWORK CONNECTIONS / TENANT ADMIN DESIGN</span><h2 id="connections-title">Rencana koneksi & tunneling</h2></div><span class="pill amber-pill">LAB / TIDAK MENGUBAH JARINGAN</span></div>
+        <p>Pratinjau alur Tenant Admin, bukan konfigurasi tersimpan atau fitur tenant produksi. Pilih jalur untuk melihat persyaratan dan pembatasannya. Tidak ada kredensial atau alamat IP nyata yang diminta.</p>
+        <div class="form-grid">
+          <div><label for="connection-method">Metode koneksi</label>
+            <select id="connection-method"><option value="direct_secure">Langsung: SSH / SNMPv3 authPriv</option><option value="wireguard">WireGuard (gateway kompatibel)</option><option value="ipsec">IPsec (gateway kompatibel)</option><option value="agent">IPAT site gateway (direncanakan)</option><option value="public_telnet">Telnet publik (tidak memenuhi syarat)</option></select></div>
+          <div><label for="connection-gateway">Jenis gateway (contoh)</label>
+            <select id="connection-gateway"><option value="routeros7">MikroTik RouterOS 7</option><option value="routeros6">MikroTik RouterOS 6</option><option value="linux">Linux / gateway lain</option><option value="none">Tanpa gateway</option></select></div>
+        </div>
+        <label for="connection-profile">Profil kemampuan perangkat (simulasi)</label>
+        <select id="connection-profile"><option value="VIRTUAL-TELNET-ONLY">VIRTUAL-TELNET-ONLY</option><option value="VIRTUAL-SECURE-MANAGED">VIRTUAL-SECURE-MANAGED</option></select>
+        <button id="check-connection" type="button" class="secondary">Validasi rencana di backend lab</button>
+        <div class="form-notice" id="server-plan-result" role="status" aria-live="polite">Belum divalidasi oleh backend lab. Tidak ada koneksi ke perangkat.</div>
+        <div class="form-notice" id="connection-result" role="status" aria-live="polite">Pilih metode untuk melihat batas keamanan dan kompatibilitas.</div>
+        <p><strong>Alur produksi yang direncanakan:</strong> Tenant Admin → Network Connections → draft → uji koneksi terbatas → persetujuan terpisah → aktivasi → Add OLT. Backend wajib memvalidasi tenant, POP, identitas, audit, protokol, isolasi hop terakhir dan izin sebelum deployment. Belum ada tombol aktivasi karena backend produksi belum terotorisasi.</p>
+      </section>
+      <section id="tunnel-wizard" class="panel" aria-labelledby="tunnel-wizard-title">
+        <div class="section-top"><div><span class="eyebrow">R9.12 / TENANT CONNECTION WIZARD PROTOTYPE</span><h2 id="tunnel-wizard-title">Simulasi kesiapan tunnel WireGuard</h2></div><span class="pill amber-pill">TANPA KONFIGURASI AKTIF</span></div>
+        <p>Semua pilihan di bawah hanya skenario sintetis untuk memeriksa aturan backend. Jangan menafsirkan pilihan sebagai bukti bahwa lokasi sebenarnya sudah diverifikasi; tidak ada kunci, IP, kredensial, skrip RouterOS maupun perintah jaringan dibuat.</p>
+        <div class="form-grid">
+          <div><label for="wg-gateway">Gateway contoh</label><select id="wg-gateway"><option value="routeros7_x86">MikroTik x86 RouterOS 7</option><option value="routeros6">MikroTik RouterOS 6</option><option value="other">Lainnya (belum diuji)</option></select></div>
+          <div><label for="wg-segmentation">Skenario segmen manajemen</label><select id="wg-segmentation"><option value="unknown">Belum diketahui</option><option value="same_shared_lan">Satu LAN bersama pelanggan</option><option value="verified_isolated">Simulasi: segmen terisolasi dan diverifikasi</option></select></div>
+          <div><label for="wg-recovery">Skenario pemulihan</label><select id="wg-recovery"><option value="console_available_untested">Console tersedia, pemulihan belum diuji</option><option value="unknown">Tidak diketahui</option><option value="console_restore_tested">Simulasi: pemulihan console sudah diuji</option></select></div>
+          <div><label for="wg-baseline">Skenario baseline distribusi</label><select id="wg-baseline"><option value="unmeasured">Belum diukur dan disetujui</option><option value="approved_measured">Simulasi: sudah diukur dan disetujui</option></select></div>
+        </div>
+        <button type="button" class="secondary" id="check-wg-review">Periksa syarat melalui backend lab</button>
+        <p id="wg-review-status" class="form-notice" role="status" aria-live="polite">Belum diperiksa. Perubahan jaringan dan adopsi tetap terkunci.</p>
+        <div id="wg-review-gates" aria-label="Persyaratan yang belum terpenuhi"></div>
+      </section>
+      <section class="panel" id="direct-protocol-panel" aria-labelledby="direct-protocol-title">
+        <div class="section-top"><div><span class="eyebrow">R9.17 / PROTOKOL MANAJEMEN</span><h2 id="direct-protocol-title">Prioritas koneksi langsung ke perangkat</h2></div><span class="pill amber-pill">PEMILIHAN LAB</span></div>
+        <p>WireGuard/IPsec bukan prasyarat. Pilih protokol berdasarkan layanan asli dan firmware perangkat, gunakan alamat manajemen yang telah terhubung, lalu verifikasi identitas perangkat dan hak akses sebelum autentikasi. API-SSL MikroTik tidak otomatis tersedia pada ZTE C320.</p>
+        <div class="form-grid">
+          <div><label for="direct-device-type">Jenis perangkat</label><select id="direct-device-type"><option value="zte_c320">OLT ZTE C320 (dilaporkan)</option><option value="cdata_olt">OLT C-DATA (firmware belum teruji)</option><option value="mikrotik_routeros7">Router MikroTik RouterOS 7</option><option value="ont_tr069">ONT dengan TR-069 teruji</option><option value="ont_usp">ONT dengan TR-369/USP teruji</option></select></div>
+          <div><label for="direct-protocol">Protokol yang hendak diperiksa</label><select id="direct-protocol"><option value="ssh_pinned">SSH dengan host key tepercaya</option><option value="snmpv3_authpriv">SNMPv3 authPriv</option></select></div>
+          <div><label for="direct-network">Jaringan Manajemen yang tersedia</label><select id="direct-network"><option value="observed_private">Alamat privat; transport sudah teramati, isolasi belum diverifikasi</option><option value="unverified">Jalur belum diverifikasi</option></select></div>
+        </div>
+        <button type="button" id="direct-protocol-review" class="secondary">Periksa kesiapan koneksi langsung</button>
+        <p id="direct-protocol-status" role="status" aria-live="polite" class="form-notice">Tidak mengirim kredensial atau menjalankan perintah ke perangkat.</p>
+      </section>
+      <section class="panel" id="site-a-hub-panel" aria-labelledby="site-a-hub-title">
+        <div class="section-top"><div><span class="eyebrow">R9.15 / PUSAT MANAJEMEN JARINGAN</span><h2 id="site-a-hub-title">Rancangan Server Pusat IPAT → Gateway Lokasi (tanpa push)</h2></div><span class="pill amber-pill">SIMULASI, BELUM AKTIF</span></div>
+        <p>Server Pusat IPAT memprioritaskan koneksi langsung yang aman melalui jaringan yang sudah tersedia. Gateway Lokasi dikonfigurasi administrator setempat; panel tidak melakukan push. Alamat privat digunakan pada jalur privat yang telah diverifikasi. Untuk lokasi luar, pilih endpoint publik pusat yang terbukti dapat dijangkau bila tunnel opsional memang diperlukan.</p>
+        <div class="form-grid">
+          <div><label for="hub-method">Metode</label><select id="hub-method"><option value="direct_private">Langsung pada network privat yang sudah tersambung</option><option value="wireguard">WireGuard opsional: server pusat menerima, gateway lokasi menghubungi</option><option value="ipsec">IPsec: rancangan saja</option></select></div>
+          <div><label for="hub-address-scope">Alamat server pusat (contoh)</label><select id="hub-address-scope"><option value="private">Alamat privat</option><option value="public">Alamat publik</option></select></div>
+          <div><label for="site-b-path">Hubungan jaringan (contoh)</label><select id="site-b-path"><option value="unverified">Belum diverifikasi</option><option value="verified_private">Jalur privat dua arah telah diverifikasi (simulasi)</option><option value="external">Gateway lokasi berada di jaringan luar</option></select></div>
+          <div><label for="site-b-gateway">Jenis gateway lokasi</label><select id="site-b-gateway"><option value="routeros7">MikroTik RouterOS 7</option><option value="linux">Linux</option></select></div>
+        </div>
+        <button type="button" id="check-site-a-plan" class="secondary">Periksa topologi jaringan manajemen</button>
+        <p role="status" aria-live="polite" id="site-a-plan-result" class="form-notice">Belum diperiksa. Formulir simulasi tidak menerima IP aktual, kredensial, atau kunci.</p>
+        <div class="divider"></div>
+        <h3>R9.16 — Kunci DEV server pusat & pasangan manual gateway lokasi</h3>
+        <p><strong>LAB PENGEMBANGAN SAJA, BUKAN KONFIGURASI PRODUKSI.</strong> Public key berasal dari berkas terbatas pada server pusat, bila tersedia. Private key server pusat tidak pernah dikirim ke browser. Private key gateway lokasi dibuat dan disimpan oleh operator gateway sendiri. Hasilnya tiga perintah RouterOS berstatus <code>disabled=yes</code> untuk peninjauan, bukan skrip yang sudah disetujui untuk dijalankan.</p>
+        <div id="site-a-key-status" class="form-notice" role="status" aria-live="polite">Memeriksa public key pengembangan server pusat…</div>
+        <div class="form-grid"><div><label>Public key server pusat (DEV, publik)</label><code id="site-a-public-key" class="key-display">BELUM TERSEDIA</code></div></div>
+        <form id="manual-site-b-form" autocomplete="off">
+          <label for="manual-site-b-key">Public key gateway lokasi (BUKAN private key)</label>
+          <input id="manual-site-b-key" type="text" maxlength="44" placeholder="44 karakter public key gateway lokasi" autocomplete="off" required />
+          <div class="form-grid">
+            <div><label for="manual-hub-ip">Endpoint server pusat (contoh saja)</label><input id="manual-hub-ip" maxlength="15" value="198.51.100.9" required /></div>
+            <div><label for="manual-external">Jalur gateway lokasi</label><select id="manual-external"><option value="yes">Eksternal, endpoint publik</option><option value="no">Privat, endpoint privat terverifikasi</option></select></div>
+            <div><label for="manual-a-ip">Host tunnel pusat /30 (contoh)</label><input id="manual-a-ip" maxlength="15" value="10.253.77.1" required /></div>
+            <div><label for="manual-b-ip">Host tunnel lokasi /30 (contoh)</label><input id="manual-b-ip" maxlength="15" value="10.253.77.2" required /></div>
+            <div><label for="manual-olt-ip">Host manajemen OLT /32 (contoh)</label><input id="manual-olt-ip" maxlength="15" value="192.168.77.10" required /></div>
+            <div><label for="manual-udp-port">Port UDP untuk direncanakan</label><input id="manual-udp-port" type="number" min="1024" max="65535" value="51820" required /></div>
+          </div>
+          <button type="submit" id="manual-pairing-button" class="secondary" disabled>Buat draf gateway lokasi (nonaktif)</button>
+        </form>
+        <p id="manual-pairing-status" class="form-notice" role="status" aria-live="polite">Penggunaan contoh tidak membuktikan jangkauan endpoint, isolasi segmen, backup atau persetujuan.</p>
+        <pre id="manual-pairing-output" class="key-display" aria-label="Perintah gateway lokasi nonaktif untuk review" style="white-space:pre-wrap;overflow-wrap:anywhere"></pre>
+      </section>
+      <div class="twocol">
+        <section id="register" class="panel" aria-labelledby="register-title">
+          <div class="section-top"><div><span class="eyebrow">01 / REGISTRATION</span><h2 id="register-title">Tambah kandidat perangkat</h2></div><span class="pill">DEMO</span></div>
+          <p>Isian ini hanya menguji alur formulir, validasi dan daftar. Nama wajib diawali <code>LAB-</code> dan model diawali <code>VIRTUAL-</code>.</p>
+          <form id="device-form" autocomplete="off">
+            <label for="name">Nama perangkat virtual *</label>
+            <input id="name" name="name" maxlength="80" pattern="LAB-[A-Za-z0-9 _.-]+" value="LAB-OLT-01" required>
+            <div class="form-grid">
+              <div><label for="kind">Jenis *</label><select id="kind" name="kind" required>
+                <option value="olt">OLT</option><option value="ont">ONT</option><option value="router">Router</option>
+              </select></div>
+              <div><label for="vendor">Vendor *</label><select id="vendor" name="vendor" required>
+                <option value="ZTE">ZTE</option><option value="C-DATA">C-DATA</option>
+                <option value="VSOL">VSOL</option><option value="MikroTik">MikroTik</option><option value="Other">Other</option>
+              </select></div>
+              <div><label for="model">Model virtual *</label><input id="model" maxlength="80" value="VIRTUAL-C320" pattern="VIRTUAL-[A-Za-z0-9 _.-]+" required></div>
+              <div><label for="pop">POP laboratorium *</label><select id="pop"><option value="lab-pop-a">LAB-POP-A</option><option value="lab-pop-b">LAB-POP-B</option></select></div>
+            </div>
+            <div class="form-notice"><strong>Tidak menghubungi jaringan.</strong> Alamat IP asli, kredensial, serial, upgrade firmware dan discovery dinonaktifkan sampai alur adopsi diaudit.</div>
+            <button class="primary" id="add" type="submit">＋ Tambah ke inventaris demo</button>
+            <p id="form-status" role="status" aria-live="polite">Belum ada perangkat yang dikirim.</p>
+          </form>
+        </section>
+        <section id="readiness" class="panel" aria-labelledby="readiness-title">
+          <div class="section-top"><div><span class="eyebrow">02 / STATUS</span><h2 id="readiness-title">Tahapan adopsi</h2></div><span class="pill amber-pill">PENDING</span></div>
+          <ol class="steps">
+            <li class="current"><b>1. Pendaftaran metadata</b><span>Form dan validasi demo aktif; migrasi kandidat PostgreSQL disiapkan terpisah.</span></li>
+            <li><b>2. Identitas & izin tenant</b><span>Login MFA, keanggotaan, POP dan review harus diverifikasi oleh backend.</span></li>
+            <li><b>3. Review & konfirmasi identitas perangkat</b><span>Jalur manajemen privat, fingerprint/sertifikat, model dan firmware wajib diverifikasi.</span></li>
+            <li><b>4. Uji baca-saja & telemetri</b><span>Status UNKNOWN sampai koneksi dan evidence benar-benar tersedia.</span></li>
+            <li><b>5. Adopsi aktif</b><span>Hanya setelah persetujuan, audit, isolasi tenant dan hasil tes interoperabilitas.</span></li>
+          </ol>
+          <div class="separation"><b>Adopsi nyata tetap terkunci</b><p>Penambahan data inventaris tidak menjalankan SSH, SNMP, TR-069, USP atau update firmware. Tidak ada hasil konektivitas yang dibuat-buat.</p></div>
+        </section>
+      </div>
+      <section class="panel inventory" id="inventory" aria-labelledby="inventory-title">
+        <div class="section-top"><div><span class="eyebrow">03 / INVENTORY</span><h2 id="inventory-title">Daftar kandidat & kondisi</h2></div><button id="refresh" type="button" class="secondary">↻ Muat ulang</button></div>
+        <div class="filters"><label for="pop-filter">Filter POP</label><select id="pop-filter"><option value="all">Semua POP demo</option><option value="lab-pop-a">LAB-POP-A</option><option value="lab-pop-b">LAB-POP-B</option></select>
+          <label for="kind-filter">Filter jenis</label><select id="kind-filter"><option value="all">Semua jenis</option><option value="olt">OLT</option><option value="ont">ONT</option><option value="router">Router</option></select></div>
+        <div class="table-scroll"><table><caption class="sr-only">Kandidat perangkat sintetis; bukan status perangkat nyata</caption>
+          <thead><tr><th>Perangkat</th><th>Jenis / Vendor</th><th>POP</th><th>Status adopsi</th><th>Koneksi</th><th>Kesehatan</th><th>Aksi</th></tr></thead>
+          <tbody id="rows"><tr><td colspan="7">Memuat inventaris demo...</td></tr></tbody>
+        </table></div>
+        <p id="list-status" role="status" aria-live="polite">Belum memuat daftar.</p>
+      </section>
+      <footer>IPAT · Device Manager <span>Mode sintetis, in-memory · perangkat nyata dan produksi NO_GO</span></footer>
+    </main>
+  </div>
+</div>
+</body></html>

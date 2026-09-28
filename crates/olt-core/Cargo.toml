@@ -1,0 +1,13 @@
+[package]
+name = "olt-core"
+version = "0.1.0"
+authors.workspace = true
+edition.workspace = true
+license.workspace = true
+publish = false
+
+# Pure strict offline ZTE C320 evidence and firmware review policy.
+# No networking, subprocess, credential, firmware upload or exec dependencies.
+
+[dependencies]
+libc = "=0.2.189"

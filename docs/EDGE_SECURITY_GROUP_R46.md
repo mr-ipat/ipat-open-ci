@@ -1,0 +1,49 @@
+# R4.6 — hosting provider Security Group and verified FileVault (proposed change plan)
+
+**Date:** 2026-09-25, Asia/Jakarta. Scope: IPAT *restricted lab*. **No provider or guest firewall rule has been changed.** Input evidence: owner-supplied external provider IP Addresses + Security Groups screenshot, owner-supplied completed FileVault screenshot, and independent Mac/VPS read-only diagnostics. This document proposes an explicitly GATED provider-network transaction; it is NOT approval to perform it without a tested rescue-console login.
+
+## 1. Evidence and actual exposure
+
+- The attached owner external provider screenshot shows **one visible group named `allow-all`**, with **IPv4 inbound from `0.0.0.0/0` and IPv6 inbound from `::/0`**, and outbound IPv4/IPv6 also allowing all. It displays the VPS's private IPv4, public IPv4 and **global IPv6**. Whether the security group applies only to this VPS or is shared with other resources is **UNKNOWN** and must be verified before edits.
+- Independent SSH inventory on the actual Ubuntu guest confirms global IPv6 **`2401:2900:2fc::114/128`** on `eth0`, an IPv6 default route, and SSH listening on **both `0.0.0.0:22` and `[::]:22`**. The fact that public DNS `hub.example.invalid` returned no AAAA in a prior lookup **does not disable IPv6 exposure**; reachability from an external IPv6-capable vantage point has not been proven/denied.
+- Current Stage-2 host SSH hardening was verified earlier: a key-only `openai` login from the approved Mac succeeds, while a password-only client is denied. The root-owned early config includes `PermitRootLogin no` and `PasswordAuthentication no`. This reduces SSH authentication risk but does **not replace inbound security-group filtering** for existing/future services.
+- MAC: The owner showed FileVault enabled, recovery key set and encryption complete. The assistant independently ran `fdesetup status` and observed **`FileVault is On.`**.
+- Encrypted macOS Restic repository and the Keychain password are still **both on the same Mac**. The existing Restic `--verify` was rerun *after* FileVault activation and passed **`restic check --read-data` for 4 snapshots/8 packs**, separately restored the latest reviewed source snapshot and historic partial VPS config, and matched SHA-256 hashes. **Independent secret escrow and independent second backup copy remain NOT VERIFIED; neither snapshot includes root-only VPS configuration, K3s or PostgreSQL.**
+- Mac management egress IPv4 was sampled twice with consistent results on 2026-09-25, but this **does not establish a static ISP assignment**. A strict `curl -6 --noproxy '*'` call could not prove a Mac external IPv6 address, so **do not guess an IPv6 management /128**. Do not commit a Mac ISP source IP as a long-term policy value.
+
+## 2. Intended single-VPS ingress policy — PROPOSED ONLY
+
+| Direction / family | Proposed lab rule | Explicit limitation |
+|---|---|---|
+| Inbound IPv4 TCP 22 | Allow only from a *freshly verified*, stable, owner-approved management source `<MAC_PUBLIC_IPV4>/32` | If ISP source is dynamic, prefer a trusted stable management VPN/bastion; an accidental source change would block SSH |
+| Inbound IPv4 other | Default deny at dedicated per-VPS security-group boundary | Do not open 80/443 until actual audited tenant TLS ingress is ready |
+| Inbound IPv6 SSH / application | No public inbound rule at this stage, unless a real authorized stable IPv6 management source and connectivity tests are established | Global IPv6 is live even without a DNS AAAA record; preserve required ICMPv6 control traffic per provider policy |
+| Outbound IPv4 / IPv6 | Keep the current documented egress baseline temporarily, then separately design least privilege | Future package updates, NTP, DNS, cloud-network dependencies and K3s egress must be inventoried before tightening |
+| Kubernetes TCP 6443, 10250, 2379–2380 and overlay UDP 8472/51820/51821 | No public ingress | ADR-017 private overlay/CNI and provider firewall plans remain OPEN |
+| Public HTTPS | None now; later only reviewed and authenticated TLS ingress | ACS/USP/tenant endpoints must not be enabled from this rule change |
+
+**Very important:** the screenshot shows a group literally called `allow-all`. If it is **shared with other VMs**, editing it could impact unrelated services. If the panel supports dedicated security groups, create/attach a new group for this VPS and remove `allow-all` *only after* recording baseline and all affected attachments. Merely attaching a restrictive group while `allow-all` remains attached is not a security fix if the provider unions allow rules. Conversely, changing provider-managed per-VPS firewall rules may be a separate layer from attached security groups: verify *both* interfaces and applied resources first. Do not assume OpenStack behavior without confirming the external provider UI.
+
+## 3. Gated change transaction — NEVER execute the steps unobserved
+
+1. **Recovery prerequisite:** owner logs into the live external provider VNC Console on this VPS and proves they can obtain the expected Ubuntu login session. Keep that console open; do not enter Rescue Mode or reboot just for this check. Screenshot of the Console UI alone does **not** prove a login.
+2. **Backup prerequisite:** enable FileVault (independently verified) and securely store the **existing Restic Keychain recovery password OFF the Mac** (approved independent password manager or offline vault); verify its independent recoverability *without sharing it in chat*. After escrow, run a reviewed one-time root-owned VPS configuration stream directly into encrypted Restic, with separate integrity/restore evidence and no plaintext root archive retained. The old partial config archive by itself is not enough.
+3. **Rule inventory:** from external provider Client Area record/capture the exact current `allow-all` group attachments (all VMs/interfaces), any additional security groups, the per-VPS Managed Firewall rules and IPv4/IPv6 direction/port/source. Screenshot given here records one allow-all group but **does not show affected-resource attachment or other possible layers**. Save an off-panel copy of the rule inventory before making changes.
+4. **Source check:** freshly verify the Mac IPv4 egress, assess whether it is static, and ensure at least one independent rescue-console path. Determine whether any other authorized administrators need SSH and approved source CIDRs; do not silently lock them out.
+5. **Stage narrow rules:** prepare the intended inbound management rule (TCP/22 from approved /32) while keeping outbound dependencies, then change the *correct dedicated per-VPS group* or provider rule set in one monitored maintenance transaction. Be careful: do not leave old allow-all *inbound* rules or associated group active. **DO NOT** use `Reset Rules`: external-provider procedure notes restores allow-all IPv4/IPv6. Do not simultaneously enable Ubuntu host firewall or change SSH port.
+6. **External verification:** from a new *uncached* Mac SSH connection check strict-known-host public-key login; test that the applied security-group/managed-firewall rules match both IPv4 and IPv6 source restrictions from an independent network with authorized testing capability. An unserved TCP port failing to connect is NOT proof of filtering. Verify VNC Console still works.
+7. **Rollback:** if fresh SSH fails, stop and restore the **specific documented original group/VM assignment or rules** using already-tested VNC/panel, re-establish a fresh SSH session, and then repair the restrictive policy. Any temporary return to allow-all should be tightly supervised, brief and logged. Do not blindly reset rules or change Ubuntu firewall in panic.
+
+The external provider's account-specific documentation is intentionally omitted from this product repository. The general K3s node/network requirements are at https://docs.k3s.io/installation/requirements. Actual external policy and recovery are outside IPAT's configuration scope.
+
+**Execution status:** FileVault verification + encrypted partial/source restore PASS; confirmed current dual-stack security group **allows all inbound** in the shown external provider interface; live VM IPv6 + dual-stack SSH listener PRESENT. Dedicated group creation, network ACL changes, full privileged config backup, independent password escrow, cross-source firewall tests, K3s and PostgreSQL still **NOT DONE**.
+
+
+## R4.7 updated actual owner assertions (2026-09-25)
+
+**Confirmed by owner:** `allow-all` is shared with other external provider VPSs; actual VNC Console login still fails; Restic password is held separately off the Mac (not independently recovered/tested by the assistant). **DO NOT EDIT THE EXISTING SHARED GROUP**. Preserve all currently attached services while obtaining VNC rescue access and evidence that a **dedicated IPAT-only group** can replace the old assignment without allowing rule union. No provider firewall change or K3s install is authorized. The [separate encrypted root-config backup preparation](ROOT_CONFIG_STREAM_R47.md) does not require external provider firewall changes.
+
+
+## R4.8 source portability and ownership boundary
+
+This is **archived generic observation**, not an IPAT integration manual. The owner established that the externally managed `allow-all` group is shared and must remain untouched. IPAT now proposes its **own optional host nftables control plane**, strictly limited to explicitly enrolled Ubuntu nodes and *never* an external hosting-provider API. See [native firewall architecture, threat gates and pure Rust dry-run scope](FIREWALL_CONTROL_PLANE.md). An independent out-of-band console login is still not established, so even IPAT's future own host firewall application remains blocked. Historical facts about the dual-stack exposure are retained for audit, with provider branding removed from the current repository.

@@ -1,0 +1,65 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ipat-usp-controller
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ipat-usp-controller
+  template:
+    metadata:
+      labels:
+        app: ipat-usp-controller
+    spec:
+      serviceAccountName: ipat-usp-controller
+      automountServiceAccountToken: false
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 65532
+        runAsGroup: 65532
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: usp-controller
+          image: {{ .Values.uspController.image | quote }}
+          imagePullPolicy: Never
+          env:
+            - name: IPAT_RUN_OFFLINE_USP_LAB
+              value: "1"
+            - name: IPAT_RUN_K3S_LAB
+              value: "1"
+          ports:
+            - name: http
+              containerPort: {{ .Values.uspController.port }}
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: http
+            periodSeconds: 3
+            failureThreshold: 20
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: http
+            periodSeconds: 10
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ipat-usp-controller
+spec:
+  type: ClusterIP
+  selector:
+    app: ipat-usp-controller
+  ports:
+    - name: http
+      port: {{ .Values.uspController.port }}
+      targetPort: http
