@@ -1140,3 +1140,13 @@ fisik nanti harus melewati BFF identitas asli dan worker khusus
 berbasis bukti perangkat, isolasi tenant/POP dan izin firmware yang
 terukur. Rute localhost laboratorium tidak boleh menjadi backend
 operasional melalui perubahan satu flag.
+
+## R9.20 detached OOB pin-provenance validation
+
+Offline owner-only Python pin generator compares one site-console RSA
+public key with historical observation and emits an exact restricted
+host-key pin outside Git. It deliberately does not import or export
+private SSH credentials, open network connections, or mount a
+production worker. Future signed evidence provenance and genuine
+Tenant Admin BFF must independently validate the pin source and
+all other physical gates before any real read action is dispatched.

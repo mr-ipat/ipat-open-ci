@@ -1062,3 +1062,14 @@ Provisioning, reboot dan upgrade firmware wajib maker-checker,
 backup/restore dan pengendalian jendela perubahan. Endpoint LAB
 R9.19 hanya menyediakan katalog dan MUST menolak semua POST aksi
 fisik; tidak ada worker atau credential perangkat di frontend demo.
+
+## R9.20 trusted-console host RSA pin handoff (MUST for first actual C320 read)
+
+A real device host-key RSA public key MUST be obtained via an independently
+trusted local chassis console or authenticated owner inventory, NOT by
+SSH scan/TOFU. An offline matching check MAY generate an exact
+single-host, owner-only 0600 `known_hosts` file but SHALL NOT
+implicitly approve SSH login, real `show card`, OLT adoption or any
+configuration action. Independent provenance/reviewer, least-privilege
+account, isolated last-hop, true tenant OIDC MFA and live baseline
+remain distinct prerequisites. See `docs/R920_C320_TRUSTED_CONSOLE_PIN.md`.

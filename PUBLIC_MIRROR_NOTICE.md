@@ -40,3 +40,9 @@ R9.20 protected implementation SHA `1f1820bc5b49f644d331dea3b31e41e2868a1073`
 adds an offline owner-asserted console RSA host-key pin generator and
 synthetic unit tests. No real site console key or host identity is
 included; a matching public key is not actual hardware adoption.
+
+R9.21 protected source SHA `89ef532fe33666cf88a2f504c8967467d2e41f95`
+adds an offline STRICT synthetic-only parser for the vendor's historic
+`show ssh` format. Actual OLT SSH settings, credentials and console
+transcripts are NOT part of this public snapshot. A historic vendor
+manual example does not prove this physical device's SSH settings.
