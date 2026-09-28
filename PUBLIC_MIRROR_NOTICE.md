@@ -35,3 +35,8 @@ This update includes only sanitized source code and synthetic lab
 fixtures, not physical OLT evidence or management credentials.
 The protected branch remains the operational source of truth and
 public hosted Actions still require explicit workflow authorization.
+
+R9.20 protected implementation SHA `1f1820bc5b49f644d331dea3b31e41e2868a1073`
+adds an offline owner-asserted console RSA host-key pin generator and
+synthetic unit tests. No real site console key or host identity is
+included; a matching public key is not actual hardware adoption.

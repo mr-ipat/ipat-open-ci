@@ -1252,3 +1252,13 @@ Worker produksi yang akan datang harus memverifikasi identitas host
 melalui konsol tepercaya, role baca-saja, jalur manajemen terisolasi,
 MFA signed, persetujuan independen, lease per-device, batas laju dan
 audit dengan bukti dari DB terisolasi tenant, bukan nilai boolean UI.
+
+## R9.20 owner-only independent RSA key handoff
+
+The private offline console-key verifier MAY create an exact
+`known_hosts` file but SHALL never mark hardware identity as
+cryptographically proven from an owner assertion, enable login,
+open the OLT management network, or store a private key. Reject
+symlinks, hardlinks, world-readable files, mismatches and Git-based
+input/output. Require signed external provenance, genuine MFA and
+independent reviewer before using the result for live operations.
