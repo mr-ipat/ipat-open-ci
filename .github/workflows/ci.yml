@@ -1,0 +1,41 @@
+name: IPAT synthetic public verification
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+permissions:
+  contents: read
+concurrency:
+  group: ipat-public-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  synthetic-static:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Check out sanitized repository
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      - name: Audit public snapshot and verify synthetic protocol guards
+        run: |
+          python3 ci/synthetic-guard.py
+          python3 -m unittest discover deploy/scripts/lab/r90 -p test_r90_preflight.py -v
+          python3 -m unittest discover deploy/scripts/lab/r79 -p test_c320_ssh_readonly.py -v
+          python3 -m unittest discover deploy/scripts/lab/r915 -p test_site_a_plan.py -v
+      - name: Frontend JavaScript syntax
+        run: node --check web/lab/device-workbench.js
+  rust-locked:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 24
+    steps:
+      - name: Check out sanitized repository
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      - name: Install pinned Rust toolchain
+        run: |
+          rustup toolchain install 1.98.1 --profile minimal --component rustfmt
+          rustup default 1.98.1
+      - name: Pinned workspace format, tests and C320 safe offline normalizer
+        run: |
+          cargo fmt --all -- --check
+          cargo test --workspace --locked
+          cargo build --locked -p olt-core --bin olt-evidence
