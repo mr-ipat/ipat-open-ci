@@ -1130,3 +1130,13 @@ are separate adapters. All REAL worker authorization is deny-by-default
 until signed human identity, tenant/POP grants, backend role, audited
 approval and independent device identity gates pass. A no-auth port
 probe never upgrades physical inventory or marks telemetry healthy.
+
+## R9.19 — Katalog aksi bukan worker fisik
+
+`c320_actions_lab` menyajikan delapan fitur dengan `enabled=false`
+dan endpoint mutasi yang selalu menolak. Parser `olt-core` menerima
+hasil CLI owner-only secara offline; tidak terkoneksi ke OLT. Aksi
+fisik nanti harus melewati BFF identitas asli dan worker khusus
+berbasis bukti perangkat, isolasi tenant/POP dan izin firmware yang
+terukur. Rute localhost laboratorium tidak boleh menjadi backend
+operasional melalui perubahan satu flag.

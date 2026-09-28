@@ -57,6 +57,13 @@
         <div id="physical-evidence-gates" class="steps" aria-label="Syarat pembacaan perangkat asli"></div>
         <div class="separation"><b>JANGAN JALANKAN ADOPSI OTOMATIS</b><p>OLT diasumsikan melayani pelanggan aktif. Tidak ada tombol login, update firmware, atau penerapan tunnel dari pratinjau ini.</p></div>
       </section>
+      <section class="panel" id="c320-operations" aria-labelledby="c320-operations-title">
+        <div class="section-top"><div><span class="eyebrow">R9.19 / KATALOG AKSI OLT</span><h2 id="c320-operations-title">Fungsi OLT ZTE C320 — kesiapan sebenarnya</h2></div><span class="pill amber-pill">AKSI FISIK TERKUNCI</span></div>
+        <p>Alat Rust telah menguji validasi hasil pembacaan kartu dan firmware dalam lingkungan terisolasi. Katalog ini menjelaskan kesiapan setiap fungsi, tetapi tidak memberikan akses perangkat sampai identitas OLT, akun baca-saja, dan persetujuan produksi tervalidasi. IPAT memprioritaskan SSH langsung lewat jaringan manajemen yang tersedia tanpa mewajibkan tunnel.</p>
+        <button id="refresh-c320-actions" type="button" class="secondary">Periksa fungsi yang tersedia</button>
+        <p id="c320-actions-status" class="form-notice" role="status" aria-live="polite">Memuat kesiapan dari server, bukan membaca perangkat.</p>
+        <div id="c320-actions-list" class="steps" aria-label="Fitur perangkat dan persyaratan"></div>
+      </section>
       <section id="connections" class="panel" aria-labelledby="connections-title">
         <div class="section-top"><div><span class="eyebrow">NETWORK CONNECTIONS / TENANT ADMIN DESIGN</span><h2 id="connections-title">Rencana koneksi & tunneling</h2></div><span class="pill amber-pill">LAB / TIDAK MENGUBAH JARINGAN</span></div>
         <p>Pratinjau alur Tenant Admin, bukan konfigurasi tersimpan atau fitur tenant produksi. Pilih jalur untuk melihat persyaratan dan pembatasannya. Tidak ada kredensial atau alamat IP nyata yang diminta.</p>

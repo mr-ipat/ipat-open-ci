@@ -1240,3 +1240,15 @@ remains a separate reviewed network control, never a condition for
 EVERY device connection. One actual owner-VPS TLS443 noauth preflight
 failed TCP connection without credentials or HTTP requests; existing
 private SSH banner remains UNTRUSTED device-identity evidence.
+
+## R9.19 — Penolakan fungsi fisik sampai seluruh kontrol nyata tersedia
+
+GET private lab C320 action catalog memisahkan hasil parser offline,
+fitur firmware yang belum teruji dan perubahan berdampak tinggi.
+Setiap POST action ke private LAB mengembalikan HTTP403, termasuk
+pembacaan. Browser tidak dapat menaikkan hak atau menyatakan status
+adopsi; tidak ada alamat OLT/kredensial diterima oleh endpoint ini.
+Worker produksi yang akan datang harus memverifikasi identitas host
+melalui konsol tepercaya, role baca-saja, jalur manajemen terisolasi,
+MFA signed, persetujuan independen, lease per-device, batas laju dan
+audit dengan bukti dari DB terisolasi tenant, bukan nilai boolean UI.

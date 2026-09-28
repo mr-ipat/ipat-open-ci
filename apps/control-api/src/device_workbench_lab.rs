@@ -453,6 +453,14 @@ pub(super) fn router() -> Router {
         .route("/lab/device-workbench.js", get(js))
         .route("/lab/device-physical-evidence", get(physical_evidence))
         .route(
+            "/lab/c320-action-readiness",
+            get(super::c320_actions_lab::list),
+        )
+        .route(
+            "/lab/c320-actions/{action}",
+            axum::routing::post(super::c320_actions_lab::reject_execute),
+        )
+        .route(
             "/lab/demo/connection-plan",
             axum::routing::post(preview_connection_plan),
         )
@@ -662,6 +670,55 @@ mod tests {
         assert!(!html.contains("type=\"password\""));
         assert!(!html.contains("10.0.0.2"));
     }
+    #[tokio::test]
+    async fn c320_live_actions_are_explicitly_off_and_post_is_unmounted() {
+        let app = router();
+        let reply = request(app.clone(), "GET", "/lab/c320-action-readiness", "", false).await;
+        assert_eq!(reply.status(), StatusCode::OK);
+        assert_eq!(reply.headers()[header::CACHE_CONTROL], "no-store");
+        let json: Value =
+            serde_json::from_slice(&to_bytes(reply.into_body(), 8192).await.unwrap()).unwrap();
+        assert_eq!(json["adoption_state"], "OBSERVED_NOT_ADOPTED");
+        assert_eq!(
+            json["preferred_connection"],
+            "DIRECT_PRIVATE_SSH_NO_VPN_REQUIRED"
+        );
+        assert_eq!(json["network_actions"], 0);
+        assert_eq!(json["worker_enabled"], false);
+        for capability in json["capabilities"].as_array().unwrap() {
+            assert_eq!(capability["enabled"], false);
+            assert_eq!(capability["can_run_on_live_device"], false);
+        }
+        for action in [
+            "READ_CARD_INVENTORY",
+            "READ_RUNNING_FIRMWARE",
+            "LIST_ONTS",
+            "UPGRADE_OLT_FIRMWARE",
+            "unknown",
+        ] {
+            let response = request(
+                app.clone(),
+                "POST",
+                &format!("/lab/c320-actions/{action}"),
+                "{}",
+                true,
+            )
+            .await;
+            assert_eq!(response.status(), StatusCode::FORBIDDEN);
+            let result: Value =
+                serde_json::from_slice(&to_bytes(response.into_body(), 2048).await.unwrap())
+                    .unwrap();
+            assert_eq!(result["network_actions"], 0);
+            assert_eq!(result["device_adopted"], false);
+        }
+        assert_eq!(
+            request(app.clone(), "GET", "/lab/c320-action-readiness", "", true)
+                .await
+                .status(),
+            StatusCode::OK
+        );
+    }
+
     #[tokio::test]
     async fn private_evidence_route_never_promotes_untrusted_host_to_adopted() {
         let reply = request(router(), "GET", "/lab/device-physical-evidence", "", false).await;

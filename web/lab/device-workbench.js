@@ -532,3 +532,70 @@ async function reviewDirectProtocol(){
 node('direct-device-type').addEventListener('change',refreshDirectProtocolChoices);
 node('direct-protocol-review').addEventListener('click',()=>{void reviewDirectProtocol();});
 refreshDirectProtocolChoices();
+// R9.19 central action readiness from real private LAB Rust handler.
+// No local button executes an OLT command; ALL back-end mutations denied.
+const c320ActionLabels={
+  READ_CARD_INVENTORY:'Inventaris kartu',
+  READ_RUNNING_FIRMWARE:'Versi firmware berjalan',
+  READ_ACTIVE_ALARMS:'Alarm OLT',
+  LIST_ONTS:'Daftar ONT',
+  READ_ONT_OPTICAL_METRICS:'Metrik optik ONT',
+  PROVISION_ONTS:'Provisioning ONT',
+  REBOOT_OLT:'Reboot perangkat',
+  UPGRADE_OLT_FIRMWARE:'Pembaruan firmware'
+};
+async function refreshC320Actions(){
+  const button=node('refresh-c320-actions');
+  const status=node('c320-actions-status');
+  const output=node('c320-actions-list');
+  button.disabled=true;
+  output.replaceChildren();
+  try{
+    const response=await fetch('/lab/c320-action-readiness',{
+      credentials:'omit',cache:'no-store'
+    });
+    if(!response.ok)throw new Error('not available');
+    const catalog=await response.json();
+    const features=catalog.capabilities;
+    if(catalog.mode!=='PHYSICAL_C320_PRE_ADOPTION_ACTION_CATALOG'
+      || catalog.target!=='DEV-01'
+      || catalog.adoption_state!=='OBSERVED_NOT_ADOPTED'
+      || catalog.preferred_connection!=='DIRECT_PRIVATE_SSH_NO_VPN_REQUIRED'
+      || catalog.real_device_authenticated!==false
+      || catalog.independent_oob_olt_host_key_verified!==false
+      || catalog.dedicated_device_readonly_account_verified!==false
+      || catalog.management_last_hop_isolated!==false
+      || catalog.model_and_firmware_read_from_real_hardware!==false
+      || catalog.live_distribution_baseline_approved!==false
+      || catalog.genuine_tenant_admin_mfa_verified!==false
+      || catalog.independent_reviewer_approved!==false
+      || catalog.worker_enabled!==false
+      || catalog.network_actions!==0 || catalog.device_adopted!==false
+      || catalog.actual_device_health!=='NOT_MEASURED'
+      || !Array.isArray(features) || features.length!==8
+      || new Set(features.map(item=>item.action)).size!==8
+      || features.some(item=>!Object.hasOwn(c320ActionLabels,item.action)
+         || item.enabled!==false || item.can_run_on_live_device!==false
+         || typeof item.state!=='string' || typeof item.requires!=='string'))
+      throw new Error('server claims unverified live device action');
+    const list=document.createDocumentFragment();
+    for(const action of features){
+      const row=el('div','physical-gate');
+      const label=el('span','',c320ActionLabels[action.action]);
+      const reason=action.state==='OFFLINE_PARSER_TESTED_LIVE_READ_BLOCKED'
+        ?'Parser offline siap; pembacaan perangkat belum dijalankan'
+        :action.state==='HIGH_IMPACT_LOCKED'
+          ?'Aksi berisiko tinggi: tidak tersedia'
+          :'Belum diuji terhadap firmware perangkat sebenarnya';
+      row.append(el('span','flag unknown','TERKUNCI'),label,el('span','',reason));
+      list.append(row);
+    }
+    output.replaceChildren(list);
+    status.textContent='8 fungsi diklasifikasi backend. Semua eksekusi ke OLT TIDAK AKTIF; hanya parser kartu dan versi yang lolos uji offline. Verifikasi konsol dan akun khusus masih diperlukan.';
+  }catch{
+    output.replaceChildren();
+    status.textContent='Katalog tidak terverifikasi. Semua aksi tetap terkunci.';
+  }finally{button.disabled=false;}
+}
+node('refresh-c320-actions').addEventListener('click',()=>{void refreshC320Actions();});
+void refreshC320Actions();

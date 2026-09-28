@@ -21,3 +21,17 @@ staged at `ci/github-actions.yml` pending owner authorization to place
 it in the GitHub workflows directory. The original full restricted
 release CI/DB recovery acceptance still runs separately in protected
 infrastructure; this public workflow is synthetic-only.
+
+R9.19 synthetic-only private source mapping:
+`c5be331e8fc0ce34836d6b5056cc808120a55173`.
+This snapshot adds the denied-by-default C320 action catalog and frontend;
+no actual physical OLT credentials, source addresses or console-key
+fingerprints are published. GitHub-hosted synthetic CI remains
+unregistered until account owner grants the GitHub `workflow` scope.
+
+Current R9.19 protected source SHA:
+`6c9273644d38144ae6d341e1ca690c1c8ee76eea`.
+This update includes only sanitized source code and synthetic lab
+fixtures, not physical OLT evidence or management credentials.
+The protected branch remains the operational source of truth and
+public hosted Actions still require explicit workflow authorization.

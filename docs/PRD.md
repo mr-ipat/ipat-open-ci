@@ -1050,3 +1050,15 @@ produksi. API-SSL MikroTik tidak boleh dianggap API-SSL umum ZTE.
 Satu uji port atau sukses TCP tidak memenuhi adopsi fisik; penerimaan
 mensyaratkan independen key/certificate+isolasi+akun terbatas,
 observasi read-only sesungguhnya dan baseline customer.
+
+## R9.19 — Katalog fungsi C320 berbasis bukti
+
+Dashboard operator MUST menampilkan status per fungsi dan alasan
+penolakan dari backend, bukan menganggap SSH yang terjangkau sebagai
+adopsi. Tahap awal: pembacaan kartu dan firmware hanya setelah
+identitas/firmware, role perangkat minimum, tenant+POP MFA dan baseline
+terverifikasi; alarm, ONT dan optik membutuhkan uji firmware asli.
+Provisioning, reboot dan upgrade firmware wajib maker-checker,
+backup/restore dan pengendalian jendela perubahan. Endpoint LAB
+R9.19 hanya menyediakan katalog dan MUST menolak semua POST aksi
+fisik; tidak ada worker atau credential perangkat di frontend demo.
