@@ -56,3 +56,9 @@ RSA public keys, hardware CLI, management addresses or operational
 secrets are included. Synthetic public CI is not proof of physical
 adoption or actual account authorization. Original operational repo
 remains private.
+
+R9.23 protected source SHA `3c8aa17` adds only a NONEXECUTABLE,
+firmware-conditional site SSH configuration review based on strictly
+PRIVATE, owner-supplied console status, with four SYNTHETIC test cases.
+No actual live OLT config, client password, real chassis RSA, direct
+management addresses or serial firmware data are included or claimed.
