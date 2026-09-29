@@ -40,9 +40,16 @@ class OnSiteNoNetworkChangePlanTests(unittest.TestCase):
         self.check_unapplied(r)
         self.assertEqual(r['proposed_config_cli_requires_site_console_and_change_approval'],
                          ['ssh server version 2'])
+    def test_ssh2_disable_status_never_proposes_regenerate_or_enable(self):
+        r=M.create_plan(BASE.replace('initialized','disable'),BASE.encode())
+        self.check_unapplied(r)
+        self.assertEqual(r['decision'],
+            'SSHV2_FIELD_AMBIGUOUS_NO_KEY_GENERATION_VERIFY_ACTUAL_HANDSHAKE')
+        self.assertEqual(r['proposed_config_cli_requires_site_console_and_change_approval'],[])
+
     def test_ssh2_uninitialized_key_no_blind_regenerate(self):
         r=M.create_plan(BASE.replace('initialized','not initialized'),BASE.encode())
         self.check_unapplied(r)
-        self.assertEqual(r['decision'],'NO_AUTOMATIC_SERVER_KEY_GENERATION_FOR_SSHV2')
+        self.assertEqual(r['decision'],'SSHV2_FIELD_AMBIGUOUS_NO_KEY_GENERATION_VERIFY_ACTUAL_HANDSHAKE')
         self.assertEqual(r['proposed_config_cli_requires_site_console_and_change_approval'],[])
 if __name__=='__main__':unittest.main()

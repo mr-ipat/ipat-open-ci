@@ -29,9 +29,9 @@ def create_plan(raw, captured):
     elif not result['ssh_daemon_reported_enabled']:
         candidate=("ssh server enable",)
         reason='DISABLED_REPORTED_SITE_APPROVAL_REQUIRED'
-    elif triage=='HOST_KEY_NOT_INITIALIZED_INDICATED_REQUIRES_SITE_REVIEW':
+    elif triage=='SSHV2_HOST_KEY_INITIALIZATION_FIELD_AMBIGUOUS':
         candidate=()
-        reason='NO_AUTOMATIC_SERVER_KEY_GENERATION_FOR_SSHV2'
+        reason='SSHV2_FIELD_AMBIGUOUS_NO_KEY_GENERATION_VERIFY_ACTUAL_HANDSHAKE'
     else:
         candidate=()
         reason='CLIENT_COMPATIBILITY_SUFFICIENT_DO_NOT_CHANGE_OLT_SSH'

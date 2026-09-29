@@ -70,3 +70,9 @@ session). It does NOT contain/forward any password, RSA console key,
 real operator credentials or physical device CLI results. Offline
 classification tests never dispatch physical OLT commands; real
 adoption remains blocked on external physical source evidence.
+
+R9.25 protected source mapping `bd733d8` corrects strictly OFFLINE
+legacy SSHv2 sample diagnostic logic: vendor `not initialized` and
+`disable` are ambiguous, never automatically trigger live C320 RSA
+server key generation, and actual transport results still do not
+constitute a real authenticated hardware read or adoption.

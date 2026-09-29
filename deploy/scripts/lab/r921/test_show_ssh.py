@@ -32,7 +32,7 @@ class StrictOfflineLegacySshStatus(unittest.TestCase):
         self.assertEqual(value['ssh_version_reported'],'ver2.0')
         self.assertEqual(value['ssh_host_key_state_reported'],'not initialized')
         self.assertEqual(value['preauthentication_triage'],
-                         'HOST_KEY_NOT_INITIALIZED_INDICATED_REQUIRES_SITE_REVIEW')
+                         'SSHV2_HOST_KEY_INITIALIZATION_FIELD_AMBIGUOUS')
         for flag in ('real_chassis_identity_verified','firmware_verified',
                      'live_ssh_config_changes_authorized','operational_read_enabled',
                      'device_adopted','real_olt_login_attempted'):
@@ -47,6 +47,14 @@ class StrictOfflineLegacySshStatus(unittest.TestCase):
                          'HOST_KEY_REPORTED_PRESENT_KEX_STILL_NEEDS_DIAGNOSIS')
         self.assertFalse(value['ssh_host_key_from_physical_console_obtained'])
         self.assertFalse(value['device_adopted'])
+    def test_historical_ssh2_disable_field_is_ambiguous_not_proof_of_broken_key(self):
+        sample=BASE.replace('not initialized','disable')
+        result=M.analyze(sample)
+        self.assertEqual(result['preauthentication_triage'],
+                         'SSHV2_HOST_KEY_INITIALIZATION_FIELD_AMBIGUOUS')
+        self.assertIs(result['live_ssh_config_changes_authorized'],False)
+        self.assertIs(result['device_adopted'],False)
+
     def test_duplicates_unsafe_text_and_world_readable_capture_denied(self):
         with self.assertRaises(M.Denied):M.analyze(BASE+'SSH version : ver2.0\n')
         with self.assertRaises(M.Denied):M.analyze(BASE.replace('ver2.0','unknown'))

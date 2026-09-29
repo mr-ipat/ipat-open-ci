@@ -64,8 +64,8 @@ def analyze(text):
     key=evidence['init server key']
     if evidence['enable-flag configuration']=='disable':phase='SSH_DAEMON_REPORTED_DISABLED'
     elif evidence['version'] in ('ver1','ver1.0'):phase='SSH_V1_REPORTED_REQUIRES_SITE_SECURITY_REVIEW'
-    elif key=='not initialized':phase='HOST_KEY_NOT_INITIALIZED_INDICATED_REQUIRES_SITE_REVIEW'
-    elif key=='disable':phase='HOST_KEY_STATUS_DISABLED_OR_AMBIGUOUS'
+    elif key=='not initialized':phase='SSHV2_HOST_KEY_INITIALIZATION_FIELD_AMBIGUOUS'
+    elif key=='disable':phase='SSHV2_HOST_KEY_INITIALIZATION_FIELD_AMBIGUOUS'
     else:phase='HOST_KEY_REPORTED_PRESENT_KEX_STILL_NEEDS_DIAGNOSIS'
     return {
        'mode':'OWNER_ASSERTED_OFFLINE_C320_SSH_SETTINGS_ONLY',
