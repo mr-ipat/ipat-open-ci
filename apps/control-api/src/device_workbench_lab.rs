@@ -678,14 +678,17 @@ mod tests {
         assert_eq!(reply.headers()[header::CACHE_CONTROL], "no-store");
         let json: Value =
             serde_json::from_slice(&to_bytes(reply.into_body(), 8192).await.unwrap()).unwrap();
-        assert_eq!(json["adoption_state"], "OBSERVED_NOT_ADOPTED");
+        assert_eq!(
+            json["adoption_state"],
+            "AUTHENTICATED_LAB_READ_OBSERVED_ADOPTION_PENDING"
+        );
         assert_eq!(
             json["preferred_connection"],
-            "DIRECT_PRIVATE_SSH_NO_VPN_REQUIRED"
+            "ENCRYPTED_LEGACY_SSH_OBSERVED_NETWORK_KEY_LAB_ONLY"
         );
         assert_eq!(
             json["transport"],
-            "CREDENTIAL_FREE_PRIVATE_SSH_AUTH_STAGE_REACHED_UNTRUSTED_HOST_KEY"
+            "OWNER_APPROVED_AUTHENTICATED_LAB_SSH_AND_TELNET_FIRST_READ"
         );
         assert_eq!(
             json["tested_legacy_ssh_profile"],
@@ -699,14 +702,28 @@ mod tests {
             serde_json::json!(["password"])
         );
         assert_eq!(json["publickey_offer_observed_for_test_account"], false);
-        assert_eq!(json["password_sent_to_physical_olt"], false);
+        assert_eq!(json["password_sent_to_physical_olt"], true);
         assert_eq!(json["alternate_telnet323_passive_tcp_reachable"], true);
         assert_eq!(json["alternate_telnet323_real_telnet_iac_observed"], true);
         assert_eq!(json["alternate_telnet323_observed_inbound_bytes"], 15);
         assert_eq!(
             json["alternate_telnet323_unencrypted_not_approved_for_login"],
+            false
+        );
+        assert_eq!(
+            json["observed_lab_ssh_password_session_authenticated"],
             true
         );
+        assert_eq!(
+            json["observed_lab_telnet_password_session_authenticated"],
+            true
+        );
+        assert_eq!(json["real_device_authenticated"], true);
+        assert_eq!(json["model_and_firmware_read_from_real_hardware"], true);
+        assert_eq!(json["actual_firmware_filetype_alias_unresolved"], true);
+        assert_eq!(json["production_auto_adoption_approved"], false);
+        assert_eq!(json["independent_oob_olt_host_key_verified"], false);
+        assert_eq!(json["actual_cards_reported"], 3);
         assert_eq!(json["network_actions"], 0);
         assert_eq!(json["worker_enabled"], false);
         for capability in json["capabilities"].as_array().unwrap() {

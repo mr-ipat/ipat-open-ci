@@ -104,6 +104,28 @@ pub fn parse_cards(input: &str) -> Result<Vec<Card>, EvidenceError> {
     }
     Ok(out)
 }
+// Some ACTUAL C320 builds print one-digit hours (e.g. 0:53:14) in
+// show version-running. Validate 0..23 / 00..59 / 00..59 exactly.
+fn valid_vendor_clock(text: &str) -> bool {
+    let parts: Vec<&str> = text.split(':').collect();
+    if parts.len() != 3
+        || !(1..=2).contains(&parts[0].len())
+        || parts[1].len() != 2
+        || parts[2].len() != 2
+        || parts.iter().any(|s| !s.bytes().all(|b| b.is_ascii_digit()))
+    {
+        return false;
+    }
+    matches!(
+        (
+            parts[0].parse::<u8>(),
+            parts[1].parse::<u8>(),
+            parts[2].parse::<u8>()
+        ),
+        (Ok(0..=23), Ok(0..=59), Ok(0..=59))
+    )
+}
+
 pub fn parse_running_versions(input: &str) -> Result<Vec<RunningVersion>, EvidenceError> {
     safe(input)?;
     let mut out: Vec<RunningVersion> = Vec::new();
@@ -129,8 +151,7 @@ pub fn parse_running_versions(input: &str) -> Result<Vec<RunningVersion>, Eviden
             || !ident(c[3])
             || !matches!(c[2], "MVR" | "FW" | "BT")
             || !c[4].bytes().all(|b| b.is_ascii_digit() || b == b'-')
-            || c[5].len() != 8
-            || !c[5].bytes().all(|b| b.is_ascii_digit() || b == b':')
+            || !valid_vendor_clock(c[5])
             || c[6].parse::<u64>().ok().filter(|n| *n > 0).is_none()
         {
             return Err(EvidenceError::Layout);
@@ -166,6 +187,68 @@ pub fn consistent_inventory(cards: &[Card], versions: &[RunningVersion]) -> bool
                     && (v.card_type == c.card_type || v.card_type == c.configured_type)
             })
         })
+}
+
+/// Partial first real capture: correlate only by exact SLOT; do NOT infer
+/// that mismatching firmware FileType is a vendor-approved card alias.
+#[derive(Debug, PartialEq, Eq)]
+pub struct FirstReadVersionCoverage {
+    pub exact_mvr_slots: Vec<String>,
+    pub unresolved_mvr_filetype: Vec<String>,
+    pub no_mvr_reported_slots: Vec<String>,
+}
+
+pub fn reconcile_first_read_versions(
+    cards: &[Card],
+    versions: &[RunningVersion],
+) -> Result<FirstReadVersionCoverage, EvidenceError> {
+    if cards.is_empty() || versions.is_empty() {
+        return Err(EvidenceError::Empty);
+    }
+    // A firmware record for a nonexistent physical slot is NOT a partial read.
+    for entry in versions {
+        let card = cards
+            .iter()
+            .find(|c| c.location == entry.location)
+            .ok_or(EvidenceError::Layout)?;
+        if entry.file_kind != "MVR" && entry.file_kind != "FW" && entry.file_kind != "BT" {
+            return Err(EvidenceError::Layout);
+        }
+        // Within the same slot the file type must be the same for all
+        // reported firmware/boot/file records. Otherwise fail closed.
+        if versions
+            .iter()
+            .any(|other| other.location == card.location && other.card_type != entry.card_type)
+        {
+            return Err(EvidenceError::Layout);
+        }
+    }
+    let mut result = FirstReadVersionCoverage {
+        exact_mvr_slots: Vec::new(),
+        unresolved_mvr_filetype: Vec::new(),
+        no_mvr_reported_slots: Vec::new(),
+    };
+    for card in cards {
+        let mvr: Vec<_> = versions
+            .iter()
+            .filter(|v| v.location == card.location && v.file_kind == "MVR")
+            .collect();
+        if mvr.is_empty() {
+            result.no_mvr_reported_slots.push(card.location.clone());
+        } else if mvr.len() != 1 {
+            return Err(EvidenceError::Duplicate);
+        } else if mvr[0].card_type == card.card_type || mvr[0].card_type == card.configured_type {
+            result.exact_mvr_slots.push(card.location.clone());
+        } else {
+            // The actual ZTE lab showed same slot but different board
+            // nomenclature. Preserve the unknown, do not silently map it.
+            result.unresolved_mvr_filetype.push(format!(
+                "{}:{}:{}:{}",
+                card.location, card.configured_type, card.card_type, mvr[0].card_type
+            ));
+        }
+    }
+    Ok(result)
 }
 
 /// Operator inputs are NOT trusted attestations; checks only make a document

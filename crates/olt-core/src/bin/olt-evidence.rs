@@ -1,6 +1,9 @@
 //! R9.18 purely LOCAL owner-supplied C320 read-only CLI capture validator.
 //! No device network calls, no SSH, no secrets, no tenant enrollment.
-use olt_core::{consistent_inventory, parse_cards, parse_running_versions, CardStatus, MAX_OUTPUT};
+use olt_core::{
+    consistent_inventory, parse_cards, parse_running_versions, reconcile_first_read_versions,
+    CardStatus, MAX_OUTPUT,
+};
 use serde_json::{json, Value};
 use sha2::{Digest, Sha256};
 use std::{
@@ -118,14 +121,55 @@ fn parse(cards_raw: &str, versions_raw: Option<&str>) -> Result<Value, String> {
       "operational_status":"LOCAL_CAPTURE_NEEDS_INDEPENDENT_PHYSICAL_REVIEW"
     }))
 }
+/// Explicit first real operator capture mode: preserve partial vendor
+/// firmware aliases without making them trusted card/firmware equivalences.
+fn parse_first_observation(cards_raw: &str, versions_raw: &str) -> Result<Value, String> {
+    let cards = parse_cards(cards_raw).map_err(|_| "exact card layout not recognized")?;
+    let versions = parse_running_versions(versions_raw)
+        .map_err(|_| "exact vendor version layout not recognized")?;
+    let coverage = reconcile_first_read_versions(&cards, &versions)
+        .map_err(|_| "version records contradict physical card slot evidence")?;
+    let mut report = parse(cards_raw, None)?;
+    let normalized: Vec<Value> = versions
+        .iter()
+        .map(|v| {
+            json!({
+               "location": v.location, "file_type_reported": v.card_type,
+               "kind": v.file_kind, "version": v.version
+            })
+        })
+        .collect();
+    report["running_versions"] = json!(normalized);
+    report["versions_sha256"] = json!(sha256_hex(versions_raw));
+    report["card_version_consistency_checked"] = json!(false);
+    report["first_read_partial_version_coverage"] = json!({
+       "exact_mvr_slots": coverage.exact_mvr_slots,
+       "unresolved_mvr_filetype": coverage.unresolved_mvr_filetype,
+       "no_mvr_reported_slots": coverage.no_mvr_reported_slots,
+    });
+    report["complete_firmware_inventory_verified"] = json!(false);
+    report["operational_status"] =
+        json!("OWNER_SUPPLIED_PARTIAL_FIRST_READ_NEEDS_FIRMWARE_ALIAS_REVIEW");
+    // No owner-supplied captures can unlock autonomous device control.
+    Ok(report)
+}
+
 fn execute(args: &[String]) -> Result<(), String> {
     if unsafe { libc::geteuid() } == 0 {
         return Err("refuse root for owner-only evidence parsing".into());
     }
     let (mut cards, mut versions, mut output) = (None, None, None);
+    let mut partial = false;
     let mut iter = args.iter().skip(1);
     while let Some(flag) = iter.next() {
-        let value = iter.next().ok_or("all flags require path values")?;
+        if flag == "--first-observation-partial-versions" {
+            if partial {
+                return Err("duplicate first-observation mode".into());
+            }
+            partial = true;
+            continue;
+        }
+        let value = iter.next().ok_or("all path flags require values")?;
         if value.is_empty() {
             return Err("empty capture path".into());
         }
@@ -149,7 +193,16 @@ fn execute(args: &[String]) -> Result<(), String> {
     }
     let cards_raw = read_private(&cards)?;
     let versions_raw = versions.as_ref().map(|p| read_private(p)).transpose()?;
-    let observation = parse(&cards_raw, versions_raw.as_deref())?;
+    let observation = if partial {
+        parse_first_observation(
+            &cards_raw,
+            versions_raw
+                .as_deref()
+                .ok_or("partial first observation requires actual version file")?,
+        )?
+    } else {
+        parse(&cards_raw, versions_raw.as_deref())?
+    };
     let data = serde_json::to_vec_pretty(&observation).map_err(|_| "json serialization failed")?;
     // We deliberately never print/return raw device transcripts on stdout.
     // Fail closed if output cannot be written entirely and synced.
@@ -187,6 +240,38 @@ mod tests {
     use super::*;
     const CARDS:&str="ZXAN#show card\nRack Shelf Slot CfgType RealType Port HardVer SoftVer Status\n-------------------------\n1 1 1 ETGO ETGOD 8 091201 V1.2.5P2 INSERVICE\n1 1 3 SMXA SMXA 0 110701 V1.2.5P2 STANDBY\n";
     const VERS:&str="ZXAN#show version-running\nPhyLoc FileType VerType VerTag BuildTime VerLength\n-------------------------\n1/1/1 ETGO MVR V1.2.5P2 2013-08-27 23:36:54 5008113\n1/1/3 SMXA MVR V1.2.5P2 2013-08-28 07:15:09 13982546\n";
+    const FIRST_LAB_CARDS:&str = "ZXAN#show card\nRack Shelf Slot CfgType RealType Port HardVer SoftVer Status\n-------------------------\n1 1 1 GTGH GTGHK 16 V1.0.0 V2.1.0 INSERVICE\n1 1 3 PRAM PRAM 3 V1.0.0 V1.01 INSERVICE\n1 1 4 SMXA SMXA 3 V1.0.0 V2.1.0 INSERVICE\n";
+    const FIRST_LAB_VERS:&str = "ZXAN#show version-running\nPhyLoc FileType VerType VerTag BuildTime VerLength\n-------------------------\n1/1/1 GTXK MVR V2.1.0 2017-07-03 00:28:55 7789380\n1/1/1 GTXK BT V4.0.16 2018-05-09 0:53:14 524288\n1/1/4 SMXA MVR V2.1.0 2017-01-17 01:04:45 24647784\n1/1/4 SMXA BT V4.0.13 2017-04-26 9:53:13 524288\n1/1/4 SMXA FW V2.1.0 2017-06-23 03:42:13 1720296\n";
+    #[test]
+    fn first_real_vendor_shaped_partial_capture_never_claims_fully_reconciled_firmware() {
+        assert!(parse(FIRST_LAB_CARDS, Some(FIRST_LAB_VERS)).is_err());
+        let r = parse_first_observation(FIRST_LAB_CARDS, FIRST_LAB_VERS).unwrap();
+        assert_eq!(r["card_count"], 3);
+        assert_eq!(r["running_versions"].as_array().unwrap().len(), 5);
+        assert_eq!(
+            r["first_read_partial_version_coverage"]["exact_mvr_slots"],
+            json!(["1/1/4"])
+        );
+        assert_eq!(
+            r["first_read_partial_version_coverage"]["no_mvr_reported_slots"],
+            json!(["1/1/3"])
+        );
+        assert_eq!(
+            r["first_read_partial_version_coverage"]["unresolved_mvr_filetype"],
+            json!(["1/1/1:GTGH:GTGHK:GTXK"])
+        );
+        assert_eq!(r["device_adopted"], false);
+        assert_eq!(r["complete_firmware_inventory_verified"], false);
+        assert_eq!(r["network_actions"], 0);
+        assert_eq!(r["remote_commands_executed"], 0);
+    }
+    #[test]
+    fn first_observation_rejects_unknown_slot_or_type_contradiction() {
+        let bad = FIRST_LAB_VERS.replace("1/1/1 GTXK MVR", "1/1/9 GTXK MVR");
+        assert!(parse_first_observation(FIRST_LAB_CARDS, &bad).is_err());
+        let bad = FIRST_LAB_VERS.replace("1/1/1 GTXK BT", "1/1/1 OTHER BT");
+        assert!(parse_first_observation(FIRST_LAB_CARDS, &bad).is_err());
+    }
     #[test]
     fn parses_strict_offline_card_plus_version_without_claiming_hardware() {
         let result = parse(CARDS, Some(VERS)).unwrap();

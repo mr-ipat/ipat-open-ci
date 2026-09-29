@@ -61,5 +61,38 @@
   "direct_private_vps_group14_olt_commands_executed": 0,
   "direct_private_vps_group14_hostkey_oob_verified": false,
   "direct_private_vps_group14_actual_login_verified": false,
-  "direct_private_vps_group14_physical_firmware_read": false
+  "direct_private_vps_group14_physical_firmware_read": false,
+  "r930_owner_lab_first_read": {
+    "observed_on": "2026-09-29",
+    "user_attests_customer_disconnected_lab": true,
+    "treat_management_changes_as_live": true,
+    "temporary_telnet_authenticated_interactive": true,
+    "temporary_ssh_authenticated_interactive": true,
+    "ssh_network_rsa_matches_previous_mac_and_vps": true,
+    "ssh_independent_chassis_identity_verified": false,
+    "telnet_authenticated_chassis_identity_cryptographically_verified": false,
+    "actual_lab_banner_vendor": "ZTE",
+    "actual_lab_banner_model": "C320",
+    "observed_cards_insvc": 3,
+    "observed_card_slots": [
+      "1/1/1",
+      "1/1/3",
+      "1/1/4"
+    ],
+    "observed_card_realtypes": [
+      "GTGHK",
+      "PRAM",
+      "SMXA"
+    ],
+    "observed_running_version_rows": 5,
+    "running_version_board_filetype_unreconciled": true,
+    "slot_1_1_3_running_mvr_unreported": true,
+    "raw_cli_captured_byte_exact": false,
+    "read_transcript_manually_transcribed_to_private_owner_folder": true,
+    "private_operator_credential_rotated": false,
+    "independently_approved_scoped_worker_enabled": false,
+    "adopted": false,
+    "device_commands_written": 0,
+    "configuration_changes": 0
+  }
 }

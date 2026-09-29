@@ -51,24 +51,22 @@ function draw() {
     row.appendChild(remove);
     fragment.appendChild(row);
   }
-  // A separately labeled historical row is never part of volatile
-  // registered candidates or production tenant inventory.
   const physicalVisible=observedPhysical !== null && pop === "all"
     && (kind === "all" || kind === "olt");
   if (physicalVisible) {
     const physicalRow=el("tr","physical-observed-row");
     const identity=el("td");
     identity.append(el("strong","","DEV-01 · LAPORAN PEMILIK"),
-                    el("small","","SSH teramati pada "+observedPhysical.observed_on));
+                    el("small","","BACAAN FISIK LAB "+observedPhysical.observed_on));
     physicalRow.appendChild(identity);
     const device=el("td");
-    device.append(el("strong","","OLT · ZTE C320 (DILAPORKAN)"),
-                  el("small","","Model dan firmware BELUM diverifikasi"));
+    device.append(el("strong","","OLT · ZTE C320 (LOGIN LAB)"),
+                  el("small","","3 kartu; sebagian firmware perlu rekonsiliasi"));
     physicalRow.appendChild(device);
     physicalRow.appendChild(td("POP BELUM DIVERIFIKASI"));
-    physicalRow.appendChild(el("td","","KANDIDAT FISIK, BELUM DIADOPSI"));
+    physicalRow.appendChild(el("td","","LAB AUTH READ · BELUM DIADOPSI"));
     const transport=el("td");
-    transport.appendChild(badge("HISTORIS / UNKNOWN","unknown"));
+    transport.appendChild(badge("SSH + TELNET LAB","unknown"));
     physicalRow.appendChild(transport);
     const health=el("td");
     health.appendChild(badge("BELUM DIUKUR","unknown"));
@@ -191,8 +189,6 @@ node("connection-method").addEventListener("change",describeConnection);
 node("connection-gateway").addEventListener("change",describeConnection);
 describeConnection();
 
-// The backend lab plan is never persisted or executed. This request uses the
-// same local-only origin guard as existing fake-device mutations.
 async function checkConnectionPlan() {
   const button=node("check-connection");
   button.disabled=true;
@@ -220,7 +216,6 @@ async function checkConnectionPlan() {
 }
 node("check-connection").addEventListener("click",()=>{void checkConnectionPlan();});
 // R9.11: Historical credential-free physical evidence, NEVER live telemetry.
-// Ignore malformed/overclaiming server responses rather than showing ONLINE.
 async function showPhysicalEvidence() {
   const statusNode = node("physical-evidence-status");
   const gatesNode = node("physical-evidence-gates");
@@ -289,20 +284,19 @@ async function showPhysicalEvidence() {
       || evidence.temporary_relay_trusted_last_hop_verified!==false
       || evidence.worker_route_check_packets_sent!==0
       || evidence.physical_read_test!=="NOT_RUN"
+      || !evidence.r930_owner_lab_first_read
+      || evidence.r930_owner_lab_first_read.temporary_telnet_authenticated_interactive!==true
+      || evidence.r930_owner_lab_first_read.temporary_ssh_authenticated_interactive!==true
+      || evidence.r930_owner_lab_first_read.ssh_independent_chassis_identity_verified!==false
+      || evidence.r930_owner_lab_first_read.observed_cards_insvc!==3
+      || evidence.r930_owner_lab_first_read.observed_running_version_rows!==5
+      || evidence.r930_owner_lab_first_read.adopted!==false
       || gated.some(([key])=>evidence[key]!==false)) {
       throw new Error("backend evidence overclaims physical readiness");
     }
-    observedPhysical={observed_on:evidence.observed_on};
+    observedPhysical={observed_on:'2026-09-29',auth_read:true};
     draw();
-    statusNode.textContent="DEV-01 · SSH privat pernah dijangkau tanpa autentikasi ("+
-      evidence.observed_on+") · fingerprint TERAMATI, BELUM DIPERCAYA · " +
-      "VPS juga menjangkau SSH OLT langsung melalui IP privat tanpa login · " +
-      "29/09: RSA + aes128-CBC + group14-SHA256 BERHASIL mencapai tahap autentikasi SSH tanpa password/perintah; identitas OLT masih BELUM TERPERCAYA · " +
-      "uji HTTPS 443 satu kali tidak berhasil menjangkau layanan TCP; API HTTPS TIDAK TERBUKTI · " +
-      "jalur akhir dan fingerprint BELUM dipercaya · " +
-      "relay sementara Mac/VPS diuji tanpa login dan sudah ditutup · " +
-      "rute ke IP privat via gateway default tetap dapat mencapai SSH, namun isolasi manajemen belum terbukti · " +
-      "status perangkat UNKNOWN / NOT_MEASURED.";
+    statusNode.textContent='DEV-01 · ACTUAL LAB: login SSH dan Telnet berhasil; tiga kartu INSERVICE, lima baris versi teramati. BUKAN adopsi produksi: identitas fisik independen, akun terbatas, backup dan worker berotorisasi belum dibuktikan.';
     const items=document.createDocumentFragment();
     for(const [,title] of gated) {
       const item=el("div","physical-gate");
@@ -391,7 +385,6 @@ async function checkSiteAPlan() {
 }
 node("check-site-a-plan").addEventListener("click",()=>{void checkSiteAPlan();});
 // R9.16: only PUBLIC Site A/B keys. Lab output is DISABLED RouterOS text.
-// The real production tenant onboarding workflow is deliberately not mounted.
 let siteADevPublicAvailable=false;
 async function loadSiteADevPublicKey(){
   const keyNode=node("site-a-public-key");
@@ -569,28 +562,35 @@ async function refreshC320Actions(){
     const features=catalog.capabilities;
     if(catalog.mode!=='PHYSICAL_C320_PRE_ADOPTION_ACTION_CATALOG'
       || catalog.target!=='DEV-01'
-      || catalog.adoption_state!=='OBSERVED_NOT_ADOPTED'
-      || catalog.preferred_connection!=='DIRECT_PRIVATE_SSH_NO_VPN_REQUIRED'
+      || catalog.adoption_state!=='AUTHENTICATED_LAB_READ_OBSERVED_ADOPTION_PENDING'
+      || catalog.preferred_connection!=='ENCRYPTED_LEGACY_SSH_OBSERVED_NETWORK_KEY_LAB_ONLY'
       || catalog.transport!==
-          'CREDENTIAL_FREE_PRIVATE_SSH_AUTH_STAGE_REACHED_UNTRUSTED_HOST_KEY'
+          'OWNER_APPROVED_AUTHENTICATED_LAB_SSH_AND_TELNET_FIRST_READ'
       || catalog.tested_legacy_ssh_profile!=='RSA_AES128CBC_GROUP14SHA256_ONLY'
       || catalog.actual_transport_authentication_stage_reached!==true
       || catalog.observed_network_host_key_still_untrusted!==true
       || catalog.credential_free_test_no_timeout!==true
-      || catalog.physical_test_actual_login_performed!==false
+      || catalog.physical_test_actual_login_performed!==true
       || catalog.credentials_sent_during_transport_test!==false
       || catalog.olt_commands_during_transport_test!==0
-      || catalog.real_device_authenticated!==false
+      || catalog.real_device_authenticated!==true
       || catalog.independent_oob_olt_host_key_verified!==false
       || catalog.dedicated_device_readonly_account_verified!==false
       || catalog.management_last_hop_isolated!==false
-      || catalog.model_and_firmware_read_from_real_hardware!==false
+      || catalog.model_and_firmware_read_from_real_hardware!==true
       || catalog.live_distribution_baseline_approved!==false
       || catalog.genuine_tenant_admin_mfa_verified!==false
       || catalog.independent_reviewer_approved!==false
+      || catalog.actual_cards_reported!==3
+      || catalog.actual_version_rows_reported!==5
+      || catalog.actual_firmware_filetype_alias_unresolved!==true
+      || catalog.actual_pram_running_mvr_not_reported!==true
+      || catalog.observed_lab_ssh_password_session_authenticated!==true
+      || catalog.observed_lab_telnet_password_session_authenticated!==true
+      || catalog.production_auto_adoption_approved!==false
       || catalog.worker_enabled!==false
       || catalog.network_actions!==0 || catalog.device_adopted!==false
-      || catalog.actual_device_health!=='NOT_MEASURED'
+      || catalog.actual_device_health!=='THREE_CARDS_INSERVICE_ALARMS_NOT_MEASURED'
       || !Array.isArray(features) || features.length!==8
       || new Set(features.map(item=>item.action)).size!==8
       || features.some(item=>!Object.hasOwn(c320ActionLabels,item.action)
@@ -601,8 +601,8 @@ async function refreshC320Actions(){
     for(const action of features){
       const row=el('div','physical-gate');
       const label=el('span','',c320ActionLabels[action.action]);
-      const reason=action.state==='OFFLINE_PARSER_TESTED_LIVE_READ_BLOCKED'
-        ?'Parser offline siap; pembacaan perangkat belum dijalankan'
+      const reason=action.state==='ACTUAL_MANUAL_LAB_FIRST_READ_VERIFIED_WORKER_BLOCKED'
+        ?'Pembacaan manual kartu fisik berhasil; worker otomatis belum diizinkan'
         :action.state==='HIGH_IMPACT_LOCKED'
           ?'Aksi berisiko tinggi: tidak tersedia'
           :'Belum diuji terhadap firmware perangkat sebenarnya';
@@ -610,7 +610,7 @@ async function refreshC320Actions(){
       list.append(row);
     }
     output.replaceChildren(list);
-    status.textContent='Profil SSH RSA + aes128-CBC + group14-SHA256 mencapai tahap autentikasi pada VPS. Seluruh delapan fungsi tetap TERKUNCI; fingerprint konsol dan akun baca-saja belum diverifikasi.';
+    status.textContent='LOGIN LAB SSH + TELNET BERHASIL: tiga kartu INSERVICE dan lima baris versi terbaca nyata. Alias GTXK/GTGHK serta firmware PRAM belum direkonsiliasi. Seluruh delapan aksi OTOMATIS tetap TERKUNCI sampai kredensial khusus, backup dan otorisasi produksi siap.';
   }catch{
     output.replaceChildren();
     status.textContent='Katalog tidak terverifikasi. Semua aksi tetap terkunci.';

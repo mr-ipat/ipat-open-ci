@@ -12,8 +12,8 @@ class TestOfflineC320ActionCatalog(unittest.TestCase):
                      'REBOOT_OLT','UPGRADE_OLT_FIRMWARE'):
             self.assertIn(line,rust)
         for rule in ('"enabled":false','"network_actions":0','"worker_enabled":false',
-                     '"device_adopted":false','"real_device_authenticated":false',
-                     '"model_and_firmware_read_from_real_hardware":false',
+                     '"device_adopted":false','"real_device_authenticated":true',
+                     '"model_and_firmware_read_from_real_hardware":true',
                      '"can_run_on_live_device":false'):
             self.assertIn(rule,rust)
         for forbidden in ('Command::new(', 'subprocess','std::net','sshpass',

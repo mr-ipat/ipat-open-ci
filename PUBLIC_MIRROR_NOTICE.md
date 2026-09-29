@@ -93,3 +93,14 @@ The live private IP is replaced with a non-operational SYNTHETIC
 credentials/console public RSA and raw Telnet bytes are excluded.
 A successful public CI never proves a real Telnet login or hardware
 adoption. NO plaintext passwords were transmitted by the actual probe.
+
+R9.30 private source `mr-ipat/ipat` PR #129 contains ACTUAL
+owner-authorized interactive lab SSH+Telnet proof and no-secret
+owner-private 0600 manually transcribed captures held OUTSIDE Git.
+This PUBLIC mirror contains only SYNTHETIC redacted vendor-shaped
+first-read fixtures and code. It removes real management IPs and
+network-observed RSA fingerprints and excludes operational documents.
+Public synthetic CI does NOT prove physical ZTE hardware identity,
+actual permissions, production tenant authorization, full firmware
+mapping, actual OLT service health, or production adoption. Hardware
+passwords and first real CLI captures were NEVER exported here.
