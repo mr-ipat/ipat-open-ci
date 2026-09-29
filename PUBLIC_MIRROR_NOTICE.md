@@ -1,5 +1,17 @@
 # IPAT public CI source mirror
 
+> Current operational note (29 September 2026): This repository remains OPTIONAL,
+> sanitized, synthetic-only supplemental CI for IPAT, **not** a second controller
+> and **not** a production deployment mirror. The public workflow is now
+> installed at `.github/workflows/ci.yml`; the three recent runs inspected
+> on this date completed successfully. Older history below documents the
+> period when workflow installation was still pending; that statement is
+> historical and is not the current state. Only reviewed, sanitized fixtures
+> may be exported from the protected source repository. Passing public CI
+> does not prove physical-device compatibility, tenant authorization,
+> encrypted secrets management or full protected CI.
+>
+
 This is an independently sanitized, synthetic-only code snapshot for public GitHub Actions.
 
 The private owner repository, privileged operational runbooks, actual
