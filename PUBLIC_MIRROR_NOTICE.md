@@ -76,3 +76,11 @@ legacy SSHv2 sample diagnostic logic: vendor `not initialized` and
 `disable` are ambiguous, never automatically trigger live C320 RSA
 server key generation, and actual transport results still do not
 constitute a real authenticated hardware read or adoption.
+
+R9.26 protected source mapping aa308c0: strictly LOCAL synthetic
+fixture regression for real site evidence gap checker. The owner's
+actual site packet contains no real console RSA, firmware captures,
+privileged device credentials or production operator proof. Only
+sanitized source and synthetic RSA fixtures are published; all
+physical adoption, real OLT login and real firmware capability
+remain unverified by public CI.
