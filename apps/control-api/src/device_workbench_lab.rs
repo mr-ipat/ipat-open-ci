@@ -694,6 +694,12 @@ mod tests {
         assert_eq!(json["actual_transport_authentication_stage_reached"], true);
         assert_eq!(json["credentials_sent_during_transport_test"], false);
         assert_eq!(json["olt_commands_during_transport_test"], 0);
+        assert_eq!(
+            json["observed_test_account_ssh_auth_methods"],
+            serde_json::json!(["password"])
+        );
+        assert_eq!(json["publickey_offer_observed_for_test_account"], false);
+        assert_eq!(json["password_sent_to_physical_olt"], false);
         assert_eq!(json["network_actions"], 0);
         assert_eq!(json["worker_enabled"], false);
         for capability in json["capabilities"].as_array().unwrap() {

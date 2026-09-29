@@ -161,6 +161,11 @@ def load_tests(loader, suite, pattern):
     mod=importlib.util.module_from_spec(spec)
     spec.loader.exec_module(mod)
     suite.addTests(loader.loadTestsFromModule(mod))
+    path=Path(__file__).resolve().parents[1]/'r924'/'test_auth_capability.py'
+    spec=importlib.util.spec_from_file_location('r924_actual_auth_offer_tests',path)
+    mod=importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    suite.addTests(loader.loadTestsFromModule(mod))
     return suite
 
 if __name__=="__main__":

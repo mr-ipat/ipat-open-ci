@@ -62,3 +62,11 @@ firmware-conditional site SSH configuration review based on strictly
 PRIVATE, owner-supplied console status, with four SYNTHETIC test cases.
 No actual live OLT config, client password, real chassis RSA, direct
 management addresses or serial firmware data are included or claimed.
+
+R9.24 protected source SHA `947955b` incorporates actual strictly
+credential-free server SSH test-user method discovery as nonsecret
+readiness metadata (`password` offered for that username in that
+session). It does NOT contain/forward any password, RSA console key,
+real operator credentials or physical device CLI results. Offline
+classification tests never dispatch physical OLT commands; real
+adoption remains blocked on external physical source evidence.
