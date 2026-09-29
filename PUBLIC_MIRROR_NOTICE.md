@@ -122,3 +122,14 @@ fingerprints are NOT published. Public CI exercises safety policy
 and parser logic, NEVER real C320 owner credentials or remote actions.
 A passing public CI does not constitute vendor-native recoverability,
 production tenant authorization or automatic physical adoption.
+
+R9.34 protected PRIVATE PR #133 actually executed ONE ephemeral
+owner-approved restricted-session TEST-LAB read of physical C320,
+but real owner password, actual response CLI bytes, private normalized
+3-slot evidence, actual one-shot audit receipt, original management
+IPv4 and network-observed RSA remain STRICTLY PRIVATE and EXCLUDED.
+This PUBLIC mirror contains only REDACTED code and SYNTHETIC vendor-
+shaped fixtures and denied-control tests. It NEVER performs live
+privileged SSH, connects to a real device, creates a production
+service account or qualifies automated SaaS adoption. Public CI is
+independent software evidence ONLY, NOT a hardware certification.

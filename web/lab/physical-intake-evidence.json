@@ -109,5 +109,20 @@
     "actual_current_alarms_semantically_validated": false,
     "real_saas_auto_adopted": false,
     "actual_device_config_writes_this_milestone": 0
+  },
+  "r934_one_shot_actual_scripted_lab_read": {
+    "read_utc": "2026-09-29T06:10:34+00:00",
+    "source": "ACTUAL_OPERATOR_INTERACTIVE_EXACT_RSA_PINNED_SSH_SCRIPT_NOT_LIVE_POLL",
+    "actual_first_scripted_one_off_ssh_login": true,
+    "actual_rust_offline_normalizer_verified": true,
+    "card_slots": 3,
+    "all_reported_inservice": true,
+    "zero_actual_config_writes": true,
+    "out_of_band_chassis_identity_verified": false,
+    "dedicated_limited_service_account_verified": false,
+    "independent_tenant_mfa_reviewer_verified": false,
+    "production_unattended_worker_running": false,
+    "device_commercially_adopted": false,
+    "secret_persisted": false
   }
 }

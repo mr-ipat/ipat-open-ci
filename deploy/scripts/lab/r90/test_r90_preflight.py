@@ -197,6 +197,11 @@ def load_tests(loader, suite, pattern):
     mod=importlib.util.module_from_spec(spec)
     spec.loader.exec_module(mod)
     suite.addTests(loader.loadTestsFromModule(mod))
+    path=Path(__file__).resolve().parents[1]/'r934'/'test_one_manual_c320_ssh_read.py'
+    spec=importlib.util.spec_from_file_location('r934_ephemeral_actual_c320_one_read_tests',path)
+    mod=importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    suite.addTests(loader.loadTestsFromModule(mod))
     return suite
 
 if __name__=="__main__":

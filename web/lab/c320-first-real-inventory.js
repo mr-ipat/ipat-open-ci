@@ -14,6 +14,9 @@
       ||r.recorded_date!=='2026-09-29'||r.observation_is_live!==false
       ||r.owner_restic_isolated_byte_identical_restore_verified!==true
       ||r.device_native_restore_rehearsed!==false
+      ||r.actual_one_shot_lab_scripted_ssh_read_verified!==true
+      ||r.actual_one_shot_scripted_cards_matched!==3
+      ||r.scripted_read_was_unattended_production_worker!==false
       ||r.real_saas_device_adopted!==false||r.production_worker_enabled!==false
       ||r.dedicated_verified_limited_role_account_exists!==false
       ||!Array.isArray(r.cards)||r.cards.length!==3
@@ -33,7 +36,7 @@
       }
       output.append(row);
     }
-    status.textContent='BUKTI HISTORIS 29 Sep 2026 · 3 kartu terbaca nyata. Backup terenkripsi Restic telah pulih identik; impor konfigurasi vendor, identitas akun terbatas dan worker otomatis BELUM teruji.';
+    status.textContent='LAB 29 Sep: pembacaan SSH terprogram satu kali berhasil, 3 kartu nyata cocok. Backup Restic pulih identik. Ini BUKAN polling otomatis; impor vendor, akun terbatas dan worker produksi belum teruji.';
   }catch{
     output.replaceChildren();status.textContent='Bukti historis gagal divalidasi; tidak ada klaim inventaris atau adopsi otomatis.';
   }

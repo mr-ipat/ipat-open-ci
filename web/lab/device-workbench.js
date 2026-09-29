@@ -592,6 +592,8 @@ async function refreshC320Actions(){
     || catalog.vendor_native_startup_config_restore_tested!==false
     || catalog.actual_local_account_privilege15_count!==2
     || catalog.actual_local_restricted_account_proven!==false
+    || catalog.actual_ephemeral_scripted_owner_lab_ssh_show_card_verified!==true
+    || catalog.ephemeral_one_shot_adapter_is_unattended_worker!==false
     || catalog.worker_enabled!==false
     || catalog.network_actions!==0 || catalog.device_adopted!==false
     || catalog.actual_device_health!=='THREE_CARDS_INSERVICE_ALARMS_NOT_MEASURED'
@@ -614,7 +616,7 @@ async function refreshC320Actions(){
     list.append(row);
     }
     output.replaceChildren(list);
-    status.textContent='LAB NYATA: SSH/Telnet login dan 3 kartu INSERVICE terbaca; backup Restic eksternal teruji pulih identik. Impor vendor, akun terbatas, MFA dan seluruh aksi otomatis masih TERKUNCI.';
+    status.textContent='LAB: SSH terprogram satu kali terbukti membaca 3 kartu nyata. Restic pulih identik; impor vendor, akun terbatas, MFA dan aksi otomatis TERKUNCI.';
   }catch{
     output.replaceChildren();
     status.textContent='Katalog tidak terverifikasi. Semua aksi tetap terkunci.';

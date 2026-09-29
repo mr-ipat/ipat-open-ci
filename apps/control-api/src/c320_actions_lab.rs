@@ -96,6 +96,12 @@ fn readiness() -> Value {
       "actual_live_active_alarms_semantically_validated":false,
       "passwordless_ssh_service_account_verified":false,
       "physical_source_independent_console_verified":false,
+      "actual_ephemeral_scripted_owner_lab_ssh_show_card_verified":true,
+      "actual_ephemeral_scripted_owner_lab_ssh_read_utc":"2026-09-29T06:10:34+00:00",
+      "actual_ephemeral_scripted_rust_normalizer_exact_cards":3,
+      "actual_ephemeral_scripted_device_configuration_writes":0,
+      "actual_ephemeral_scripted_test_credential_persisted":false,
+      "ephemeral_one_shot_adapter_is_unattended_worker":false,
       "production_auto_adoption_approved":false,
     });
     catalog
@@ -136,6 +142,10 @@ fn first_real_inventory() -> Value {
         "device_native_restore_rehearsed":false,
         "existing_privilege15_account_count":2,
         "dedicated_verified_limited_role_account_exists":false,
+        "actual_one_shot_lab_scripted_ssh_read_verified":true,
+        "actual_one_shot_scripted_read_utc":"2026-09-29T06:10:34+00:00",
+        "actual_one_shot_scripted_cards_matched":3,
+        "scripted_read_was_unattended_production_worker":false,
         "production_worker_enabled":false,
         "real_saas_device_adopted":false
     })
@@ -254,6 +264,23 @@ mod tests {
         assert_eq!(r["actual_local_restricted_account_proven"], false);
         assert_eq!(r["actual_live_manual_alarm_cli_syntax_verified"], true);
         assert_eq!(r["actual_live_active_alarms_semantically_validated"], false);
+        assert_eq!(
+            r["actual_ephemeral_scripted_owner_lab_ssh_show_card_verified"],
+            true
+        );
+        assert_eq!(
+            r["actual_ephemeral_scripted_rust_normalizer_exact_cards"],
+            3
+        );
+        assert_eq!(
+            r["actual_ephemeral_scripted_device_configuration_writes"],
+            0
+        );
+        assert_eq!(
+            r["actual_ephemeral_scripted_test_credential_persisted"],
+            false
+        );
+        assert_eq!(r["ephemeral_one_shot_adapter_is_unattended_worker"], false);
         assert_eq!(r["production_auto_adoption_approved"], false);
         assert_eq!(r["device_adopted"], false);
         assert_eq!(r["independent_reviewer_approved"], false);

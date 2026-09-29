@@ -767,6 +767,14 @@ mod tests {
         );
         assert_eq!(first["observation_is_live"], false);
         assert_eq!(first["cards"].as_array().unwrap().len(), 3);
+        assert_eq!(
+            first["actual_one_shot_lab_scripted_ssh_read_verified"],
+            true
+        );
+        assert_eq!(
+            first["scripted_read_was_unattended_production_worker"],
+            false
+        );
         assert_eq!(first["real_saas_device_adopted"], false);
         assert_eq!(
             first["owner_restic_isolated_byte_identical_restore_verified"],
@@ -783,6 +791,18 @@ mod tests {
             .await
             .status(),
             StatusCode::OK
+        );
+        assert_eq!(
+            json["actual_ephemeral_scripted_owner_lab_ssh_show_card_verified"],
+            true
+        );
+        assert_eq!(
+            json["actual_ephemeral_scripted_rust_normalizer_exact_cards"],
+            3
+        );
+        assert_eq!(
+            json["ephemeral_one_shot_adapter_is_unattended_worker"],
+            false
         );
         assert_eq!(json["actual_cards_reported"], 3);
         assert_eq!(json["network_actions"], 0);
