@@ -104,3 +104,11 @@ Public synthetic CI does NOT prove physical ZTE hardware identity,
 actual permissions, production tenant authorization, full firmware
 mapping, actual OLT service health, or production adoption. Hardware
 passwords and first real CLI captures were NEVER exported here.
+
+R9.31 original protected PR #130: ONLY strict OFFLINE code and entirely
+SYNTHETIC private-backup fixture tests included. The owner's REAL
+OLT running configuration, original protected 0700/0600 capture,
+actual local file receipt, new sensitive R9.31 operational docs,
+privileged session logs and vendor/customer metadata are EXCLUDED.
+Actual physical backup and standalone restore claims cannot be
+inferred from this public CI. Do NOT upload actual device backups.
