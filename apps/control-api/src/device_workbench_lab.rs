@@ -683,6 +683,17 @@ mod tests {
             json["preferred_connection"],
             "DIRECT_PRIVATE_SSH_NO_VPN_REQUIRED"
         );
+        assert_eq!(
+            json["transport"],
+            "CREDENTIAL_FREE_PRIVATE_SSH_AUTH_STAGE_REACHED_UNTRUSTED_HOST_KEY"
+        );
+        assert_eq!(
+            json["tested_legacy_ssh_profile"],
+            "RSA_AES128CBC_GROUP14SHA256_ONLY"
+        );
+        assert_eq!(json["actual_transport_authentication_stage_reached"], true);
+        assert_eq!(json["credentials_sent_during_transport_test"], false);
+        assert_eq!(json["olt_commands_during_transport_test"], 0);
         assert_eq!(json["network_actions"], 0);
         assert_eq!(json["worker_enabled"], false);
         for capability in json["capabilities"].as_array().unwrap() {
@@ -746,6 +757,38 @@ mod tests {
         assert_eq!(evidence["temporary_owner_mac_vps_ssh_relay_closed"], true);
         assert_eq!(evidence["temporary_relay_olt_commands_executed"], 0);
         assert_eq!(evidence["temporary_relay_trusted_last_hop_verified"], false);
+        assert_eq!(
+            evidence["direct_private_vps_group14_auth_stage_observed_on"],
+            "2026-09-29"
+        );
+        assert_eq!(
+            evidence["direct_private_vps_group14_kex"],
+            "diffie-hellman-group14-sha256"
+        );
+        assert_eq!(
+            evidence["direct_private_vps_group14_server_hostkey_packet_received"],
+            true
+        );
+        assert_eq!(
+            evidence["direct_private_vps_group14_auth_methods_advertised"],
+            true
+        );
+        assert_eq!(
+            evidence["direct_private_vps_group14_credentials_sent"],
+            false
+        );
+        assert_eq!(
+            evidence["direct_private_vps_group14_olt_commands_executed"],
+            0
+        );
+        assert_eq!(
+            evidence["direct_private_vps_group14_hostkey_oob_verified"],
+            false
+        );
+        assert_eq!(
+            evidence["direct_private_vps_group14_actual_login_verified"],
+            false
+        );
         assert_eq!(evidence["direct_private_vps_tls443_noauth_checked"], true);
         assert_eq!(evidence["direct_private_vps_tls443_tcp_reachable"], false);
         assert_eq!(evidence["direct_private_vps_tls443_api_supported"], false);

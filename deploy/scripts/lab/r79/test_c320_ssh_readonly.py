@@ -99,6 +99,32 @@ class RemoteSSHNoL1(unittest.TestCase):
         with self.assertRaisesRegex(M.Denied,"pinned RSA"):
             M.packet(self.private)
 
+    def test_actual_observed_group14_sha256_compat_is_explicit_and_process_only(self):
+        plan=dict(PLAN,transport=(
+            "ssh-strict-pinned-publickey-legacy-rsa-cbc-group14-sha256"),
+            private_ipv4="10.77.13.233",ssh_port=321)
+        self.file("plan.json",json.dumps(plan))
+        self.file("known_hosts","[10.77.13.233]:321 ssh-rsa "
+                  "AAAAB3NzaC1yc2EAAAADAQABAAABAQTESTSYNTHETICONLY\n")
+        self.assertEqual(M.packet(self.private)[1],[])
+        args=M.command_argv(self.private,plan,"show card")
+        for option in ("HostKeyAlgorithms=ssh-rsa","Ciphers=aes128-cbc",
+             "KexAlgorithms=diffie-hellman-group14-sha256",
+             "StrictHostKeyChecking=yes","PasswordAuthentication=no",
+             "PreferredAuthentications=publickey","IdentityAgent=none",
+             "ProxyCommand=none","BatchMode=yes"):
+            self.assertIn(option,args)
+        self.assertNotIn("ssh-dss"," ".join(args))
+        self.assertNotIn("StrictHostKeyChecking=no",args)
+        self.assertNotIn("PubkeyAcceptedAlgorithms=+ssh-rsa",args)
+        self.assertEqual(args[-1],"show card")
+        self.file("known_hosts","[10.77.13.233]:321 ssh-ed25519 "
+                  "AAAAC3NzaC1lZDI1NTE5AAAAIAAA\n")
+        with self.assertRaisesRegex(M.Denied,"pinned RSA"):
+            M.packet(self.private)
+        with self.assertRaisesRegex(M.Denied,"factory or privileged"):
+            M.validate(dict(plan,ssh_user="zte"))
+
     def test_factory_account_never_valid_for_live_readonly(self):
         for user in ("zte","root","admin","administrator"):
             with self.subTest(user=user):

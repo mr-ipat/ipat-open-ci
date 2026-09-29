@@ -72,6 +72,7 @@ def validate(plan):
     if plan["transport"] not in (
         "ssh-strict-pinned-publickey",
         "ssh-strict-pinned-publickey-legacy-rsa-cbc",
+        "ssh-strict-pinned-publickey-legacy-rsa-cbc-group14-sha256",
     ):
         raise Denied("unsupported SSH transport profile")
     ip = ipaddress.IPv4Address(plan["private_ipv4"])
@@ -107,7 +108,10 @@ def packet(folder):
             raise Denied("unexpected pin or host alias")
         if not re.fullmatch("[A-Za-z0-9+/]+={0,2}", items[2]):
             raise Denied("invalid pinned key")
-    if plan["transport"] == "ssh-strict-pinned-publickey-legacy-rsa-cbc":
+    if plan["transport"] in (
+        "ssh-strict-pinned-publickey-legacy-rsa-cbc",
+        "ssh-strict-pinned-publickey-legacy-rsa-cbc-group14-sha256",
+    ):
         # The device key MUST be independently pinned; a network banner
         # or ssh-keyscan result alone cannot satisfy this policy.
         if any(line.split()[1] != "ssh-rsa" for line in actual):
@@ -119,13 +123,25 @@ def command_argv(folder, plan, command):
     if plan["transport"] not in (
         "ssh-strict-pinned-publickey",
         "ssh-strict-pinned-publickey-legacy-rsa-cbc",
+        "ssh-strict-pinned-publickey-legacy-rsa-cbc-group14-sha256",
     ):
         raise Denied("unsupported SSH mode")
     if command not in {item[0] for item in COMMANDS}:
         raise Denied("only two fixed read-only commands permitted")
-    legacy = plan["transport"] == "ssh-strict-pinned-publickey-legacy-rsa-cbc"
+    legacy = plan["transport"] in (
+        "ssh-strict-pinned-publickey-legacy-rsa-cbc",
+        "ssh-strict-pinned-publickey-legacy-rsa-cbc-group14-sha256",
+    )
+    # Only the exact DEV-01 firmware candidate demonstrated an actual
+    # credentials-free group14-sha256/RSA/aes128-cbc handshake. Process-
+    # scoped compatibility MUST NOT relax global client SSH policy.
+    group14 = plan["transport"] == (
+        "ssh-strict-pinned-publickey-legacy-rsa-cbc-group14-sha256"
+    )
     compat = (["-o", "HostKeyAlgorithms=ssh-rsa",
                "-o", "Ciphers=aes128-cbc"] if legacy else [])
+    if group14:
+        compat += ["-o", "KexAlgorithms=diffie-hellman-group14-sha256"]
     return ["ssh", "-F", "/dev/null", "-T", "-n", *compat,
         "-o", "BatchMode=yes", "-o", "IdentitiesOnly=yes",
         "-o", "IdentityAgent=none", "-o", "PasswordAuthentication=no",

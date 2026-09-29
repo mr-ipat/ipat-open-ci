@@ -1262,3 +1262,16 @@ open the OLT management network, or store a private key. Reject
 symlinks, hardlinks, world-readable files, mismatches and Git-based
 input/output. Require signed external provenance, genuine MFA and
 independent reviewer before using the result for live operations.
+
+## R9.22 exact live C320 process-scoped legacy SSH interop
+
+Real no-credential VPS interoperability reaches actual C320 auth
+methods only when using RSA host key + aes128-CBC cipher +
+`diffie-hellman-group14-sha256`. Explicit compatibility is restricted
+to a single device and bounded command process. No global SSH
+weakening, ssh-dss, TLS bypass, public Telnet, SSH agent, factory
+password in scripts or automatic acceptance of an untrusted host
+fingerprint. A successful key exchange MUST NOT be interpreted as
+independent device identity or permission to authenticate, even for
+the owner-provided laboratory account on a subscriber-serving OLT.
+Full physical, account, OIDC and change-control gates are unchanged.

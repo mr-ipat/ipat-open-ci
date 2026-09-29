@@ -46,3 +46,13 @@ adds an offline STRICT synthetic-only parser for the vendor's historic
 `show ssh` format. Actual OLT SSH settings, credentials and console
 transcripts are NOT part of this public snapshot. A historic vendor
 manual example does not prove this physical device's SSH settings.
+
+R9.22 protected source snapshot SHA `7d81c6b5f1486fe39bd4c5fe338906d688634a45` adds an EXACT
+per-device ZTE C320 legacy SSH transport profile from actual owner-VPS
+NO-CREDENTIAL network negotiation: ssh-rsa + aes128-cbc +
+diffie-hellman-group14-sha256 reached the remote authentication
+stage. No real OLT credentials, device passwords, trusted console
+RSA public keys, hardware CLI, management addresses or operational
+secrets are included. Synthetic public CI is not proof of physical
+adoption or actual account authorization. Original operational repo
+remains private.

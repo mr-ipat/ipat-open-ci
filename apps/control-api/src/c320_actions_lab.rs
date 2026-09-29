@@ -21,7 +21,14 @@ fn readiness() -> Value {
       "target":"DEV-01",
       "mode":"PHYSICAL_C320_PRE_ADOPTION_ACTION_CATALOG",
       "adoption_state":"OBSERVED_NOT_ADOPTED",
-      "transport":"HISTORICAL_PRIVATE_SSH_BANNER_ONLY",
+      "transport":"CREDENTIAL_FREE_PRIVATE_SSH_AUTH_STAGE_REACHED_UNTRUSTED_HOST_KEY",
+      "tested_legacy_ssh_profile":"RSA_AES128CBC_GROUP14SHA256_ONLY",
+      "actual_transport_authentication_stage_reached":true,
+      "observed_network_host_key_still_untrusted":true,
+      "credential_free_test_no_timeout":true,
+      "physical_test_actual_login_performed":false,
+      "credentials_sent_during_transport_test":false,
+      "olt_commands_during_transport_test":0,
       "preferred_connection":"DIRECT_PRIVATE_SSH_NO_VPN_REQUIRED",
       "real_device_authenticated":false,
       "independent_oob_olt_host_key_verified":false,
@@ -81,6 +88,17 @@ mod tests {
     #[test]
     fn incomplete_real_hardware_proof_keeps_entire_catalog_disabled() {
         let r = readiness();
+        assert_eq!(
+            r["transport"],
+            "CREDENTIAL_FREE_PRIVATE_SSH_AUTH_STAGE_REACHED_UNTRUSTED_HOST_KEY"
+        );
+        assert_eq!(
+            r["tested_legacy_ssh_profile"],
+            "RSA_AES128CBC_GROUP14SHA256_ONLY"
+        );
+        assert_eq!(r["actual_transport_authentication_stage_reached"], true);
+        assert_eq!(r["credentials_sent_during_transport_test"], false);
+        assert_eq!(r["olt_commands_during_transport_test"], 0);
         assert_eq!(r["device_adopted"], false);
         assert_eq!(r["real_device_authenticated"], false);
         assert_eq!(r["independent_oob_olt_host_key_verified"], false);

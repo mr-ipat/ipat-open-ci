@@ -262,6 +262,19 @@ async function showPhysicalEvidence() {
       || evidence.direct_private_vps_ssh_olt_commands_executed!==0
       || evidence.direct_private_vps_ssh_host_identity_verified!==false
       || evidence.direct_private_vps_ssh_last_hop_isolation_verified!==false
+      || evidence.direct_private_vps_group14_auth_stage_observed_on!=="2026-09-29"
+      || evidence.direct_private_vps_group14_hostkey_algorithm!=="ssh-rsa"
+      || evidence.direct_private_vps_group14_cipher!=="aes128-cbc"
+      || evidence.direct_private_vps_group14_kex!=="diffie-hellman-group14-sha256"
+      || evidence.direct_private_vps_group14_server_hostkey_packet_received!==true
+      || evidence.direct_private_vps_group14_auth_methods_advertised!==true
+      || evidence.direct_private_vps_group14_client_timeout!==false
+      || evidence.direct_private_vps_group14_credentials_sent!==false
+      || evidence.direct_private_vps_group14_client_private_key_sent!==false
+      || evidence.direct_private_vps_group14_olt_commands_executed!==0
+      || evidence.direct_private_vps_group14_hostkey_oob_verified!==false
+      || evidence.direct_private_vps_group14_actual_login_verified!==false
+      || evidence.direct_private_vps_group14_physical_firmware_read!==false
       || evidence.direct_private_vps_tls443_noauth_checked!==true
       || evidence.direct_private_vps_tls443_tcp_reachable!==false
       || evidence.direct_private_vps_tls443_identity_verified!==false
@@ -284,6 +297,7 @@ async function showPhysicalEvidence() {
     statusNode.textContent="DEV-01 · SSH privat pernah dijangkau tanpa autentikasi ("+
       evidence.observed_on+") · fingerprint TERAMATI, BELUM DIPERCAYA · " +
       "VPS juga menjangkau SSH OLT langsung melalui IP privat tanpa login · " +
+      "29/09: RSA + aes128-CBC + group14-SHA256 BERHASIL mencapai tahap autentikasi SSH tanpa password/perintah; identitas OLT masih BELUM TERPERCAYA · " +
       "uji HTTPS 443 satu kali tidak berhasil menjangkau layanan TCP; API HTTPS TIDAK TERBUKTI · " +
       "jalur akhir dan fingerprint BELUM dipercaya · " +
       "relay sementara Mac/VPS diuji tanpa login dan sudah ditutup · " +
@@ -459,8 +473,6 @@ async function submitSiteBManualReview(event){
 }
 node("manual-site-b-form").addEventListener("submit",event=>{void submitSiteBManualReview(event);});
 void loadSiteADevPublicKey();
-// R9.17 operator-facing direct-first selection. The lab accepts only
-// device/protocol enums. It never receives IPs, keys, credentials or jobs.
 const managementProtocolCandidates={
   zte_c320:[['ssh_pinned','SSH — kunci host diverifikasi'],
             ['snmpv3_authpriv','SNMPv3 authPriv — jika benar-benar tersedia']],
@@ -532,8 +544,6 @@ async function reviewDirectProtocol(){
 node('direct-device-type').addEventListener('change',refreshDirectProtocolChoices);
 node('direct-protocol-review').addEventListener('click',()=>{void reviewDirectProtocol();});
 refreshDirectProtocolChoices();
-// R9.19 central action readiness from real private LAB Rust handler.
-// No local button executes an OLT command; ALL back-end mutations denied.
 const c320ActionLabels={
   READ_CARD_INVENTORY:'Inventaris kartu',
   READ_RUNNING_FIRMWARE:'Versi firmware berjalan',
@@ -561,6 +571,15 @@ async function refreshC320Actions(){
       || catalog.target!=='DEV-01'
       || catalog.adoption_state!=='OBSERVED_NOT_ADOPTED'
       || catalog.preferred_connection!=='DIRECT_PRIVATE_SSH_NO_VPN_REQUIRED'
+      || catalog.transport!==
+          'CREDENTIAL_FREE_PRIVATE_SSH_AUTH_STAGE_REACHED_UNTRUSTED_HOST_KEY'
+      || catalog.tested_legacy_ssh_profile!=='RSA_AES128CBC_GROUP14SHA256_ONLY'
+      || catalog.actual_transport_authentication_stage_reached!==true
+      || catalog.observed_network_host_key_still_untrusted!==true
+      || catalog.credential_free_test_no_timeout!==true
+      || catalog.physical_test_actual_login_performed!==false
+      || catalog.credentials_sent_during_transport_test!==false
+      || catalog.olt_commands_during_transport_test!==0
       || catalog.real_device_authenticated!==false
       || catalog.independent_oob_olt_host_key_verified!==false
       || catalog.dedicated_device_readonly_account_verified!==false
@@ -591,7 +610,7 @@ async function refreshC320Actions(){
       list.append(row);
     }
     output.replaceChildren(list);
-    status.textContent='8 fungsi diklasifikasi backend. Semua eksekusi ke OLT TIDAK AKTIF; hanya parser kartu dan versi yang lolos uji offline. Verifikasi konsol dan akun khusus masih diperlukan.';
+    status.textContent='Profil SSH RSA + aes128-CBC + group14-SHA256 mencapai tahap autentikasi pada VPS. Seluruh delapan fungsi tetap TERKUNCI; fingerprint konsol dan akun baca-saja belum diverifikasi.';
   }catch{
     output.replaceChildren();
     status.textContent='Katalog tidak terverifikasi. Semua aksi tetap terkunci.';

@@ -1150,3 +1150,14 @@ private SSH credentials, open network connections, or mount a
 production worker. Future signed evidence provenance and genuine
 Tenant Admin BFF must independently validate the pin source and
 all other physical gates before any real read action is dispatched.
+
+## R9.22 actual device-specific SSH crypto capability detection
+
+Transport compatibility and device identity/authorization are
+SEPARATE axes. Record exact observed KEX/hostkey/cipher from a
+credential-free bounded lab probe and select a dedicated, audited
+adapter profile only for that individual candidate; no universal
+OpenSSH downgrade. R7.9 C320 `group14-sha256` compatibility is now
+actually proven through SSH authentication-method negotiation on
+owner VPS, but real authenticated read/firmware compatibility and
+signed production tenant/POP action worker remain unimplemented.

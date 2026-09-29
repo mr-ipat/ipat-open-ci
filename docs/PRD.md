@@ -1073,3 +1073,18 @@ implicitly approve SSH login, real `show card`, OLT adoption or any
 configuration action. Independent provenance/reviewer, least-privilege
 account, isolated last-hop, true tenant OIDC MFA and live baseline
 remain distinct prerequisites. See `docs/R920_C320_TRUSTED_CONSOLE_PIN.md`.
+
+## R9.22 actual ZTE C320 transport acceptance, pending device identity
+
+MUST offer an exact-device, explicit SSH legacy adapter profile
+`ssh-strict-pinned-publickey-legacy-rsa-cbc-group14-sha256` after the
+actual owner's first uncredentialed physical VPS test proved
+`ssh-rsa` + `aes128-cbc` +
+`diffie-hellman-group14-sha256` reaches AUTH method negotiation.
+The standard secure per-device default remains unchanged; never
+enable `ssh-dss`, disable host-key verification, weaken global SSH,
+expose plaintext Telnet or use factory privileged accounts as a
+commercial collector. MUST independently pin true physical chassis
+RSA, validate restricted device account, tenant/POP and baseline
+before an authenticated first CLI read. Hardware ADOPTED and actual
+health are FALSE/NOT_MEASURED until genuine signed reviewer approval.

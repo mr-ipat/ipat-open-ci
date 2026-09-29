@@ -48,5 +48,18 @@
   "direct_private_vps_tls443_identity_verified": false,
   "direct_private_vps_tls443_api_supported": false,
   "direct_private_vps_tls443_credentials_sent": false,
-  "direct_private_vps_tls443_http_requests_sent": 0
+  "direct_private_vps_tls443_http_requests_sent": 0,
+  "direct_private_vps_group14_auth_stage_observed_on": "2026-09-29",
+  "direct_private_vps_group14_hostkey_algorithm": "ssh-rsa",
+  "direct_private_vps_group14_cipher": "aes128-cbc",
+  "direct_private_vps_group14_kex": "diffie-hellman-group14-sha256",
+  "direct_private_vps_group14_server_hostkey_packet_received": true,
+  "direct_private_vps_group14_auth_methods_advertised": true,
+  "direct_private_vps_group14_client_timeout": false,
+  "direct_private_vps_group14_credentials_sent": false,
+  "direct_private_vps_group14_client_private_key_sent": false,
+  "direct_private_vps_group14_olt_commands_executed": 0,
+  "direct_private_vps_group14_hostkey_oob_verified": false,
+  "direct_private_vps_group14_actual_login_verified": false,
+  "direct_private_vps_group14_physical_firmware_read": false
 }
