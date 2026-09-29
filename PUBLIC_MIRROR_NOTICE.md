@@ -84,3 +84,12 @@ privileged device credentials or production operator proof. Only
 sanitized source and synthetic RSA fixtures are published; all
 physical adoption, real OLT login and real firmware capability
 remain unverified by public CI.
+
+R9.28 protected original source maps to draft PR128: synthetic
+simulation of an ACTUALLY owner-approved physical C320 private TCP323
+PASSIVE noauth response and static privately tested Rust metadata.
+The live private IP is replaced with a non-operational SYNTHETIC
+10.77.* fixture; original private source history, physical site
+credentials/console public RSA and raw Telnet bytes are excluded.
+A successful public CI never proves a real Telnet login or hardware
+adoption. NO plaintext passwords were transmitted by the actual probe.

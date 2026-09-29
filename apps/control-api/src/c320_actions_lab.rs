@@ -33,6 +33,13 @@ fn readiness() -> Value {
       "credentials_sent_during_transport_test":false,
       "olt_commands_during_transport_test":0,
       "preferred_connection":"DIRECT_PRIVATE_SSH_NO_VPN_REQUIRED",
+      "alternate_telnet323_passive_tcp_reachable":true,
+      "alternate_telnet323_real_telnet_iac_observed":true,
+      "alternate_telnet323_observed_inbound_bytes":15,
+      "alternate_telnet323_credentials_sent":false,
+      "alternate_telnet323_host_identity_unverified":true,
+      "alternate_telnet323_unencrypted_not_approved_for_login":true,
+      "alternate_telnet323_olt_commands_executed":0,
       "real_device_authenticated":false,
       "independent_oob_olt_host_key_verified":false,
       "dedicated_device_readonly_account_verified":false,
@@ -102,6 +109,15 @@ mod tests {
         assert_eq!(r["actual_transport_authentication_stage_reached"], true);
         assert_eq!(r["credentials_sent_during_transport_test"], false);
         assert_eq!(r["olt_commands_during_transport_test"], 0);
+        assert_eq!(r["alternate_telnet323_passive_tcp_reachable"], true);
+        assert_eq!(r["alternate_telnet323_real_telnet_iac_observed"], true);
+        assert_eq!(r["alternate_telnet323_observed_inbound_bytes"], 15);
+        assert_eq!(r["alternate_telnet323_credentials_sent"], false);
+        assert_eq!(
+            r["alternate_telnet323_unencrypted_not_approved_for_login"],
+            true
+        );
+        assert_eq!(r["alternate_telnet323_olt_commands_executed"], 0);
         assert_eq!(r["device_adopted"], false);
         assert_eq!(r["real_device_authenticated"], false);
         assert_eq!(r["independent_oob_olt_host_key_verified"], false);

@@ -700,6 +700,13 @@ mod tests {
         );
         assert_eq!(json["publickey_offer_observed_for_test_account"], false);
         assert_eq!(json["password_sent_to_physical_olt"], false);
+        assert_eq!(json["alternate_telnet323_passive_tcp_reachable"], true);
+        assert_eq!(json["alternate_telnet323_real_telnet_iac_observed"], true);
+        assert_eq!(json["alternate_telnet323_observed_inbound_bytes"], 15);
+        assert_eq!(
+            json["alternate_telnet323_unencrypted_not_approved_for_login"],
+            true
+        );
         assert_eq!(json["network_actions"], 0);
         assert_eq!(json["worker_enabled"], false);
         for capability in json["capabilities"].as_array().unwrap() {
