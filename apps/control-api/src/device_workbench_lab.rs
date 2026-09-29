@@ -15,6 +15,7 @@ use tokio::sync::Mutex;
 const HTML: &str = include_str!("../../../web/lab/device-workbench.html");
 const CSS: &str = include_str!("../../../web/lab/device-workbench.css");
 const JS: &str = include_str!("../../../web/lab/device-workbench.js");
+const C320_FIRST_REAL_JS: &str = include_str!("../../../web/lab/c320-first-real-inventory.js");
 const PHYSICAL_EVIDENCE: &str = include_str!("../../../web/lab/physical-intake-evidence.json");
 const MAX_DEMO_CANDIDATES: usize = 24;
 
@@ -439,6 +440,12 @@ async fn js() -> (HeaderMap, &'static str) {
         JS,
     )
 }
+async fn first_real_inventory_js() -> (HeaderMap, &'static str) {
+    (
+        super::private_lab_headers("text/javascript; charset=utf-8"),
+        C320_FIRST_REAL_JS,
+    )
+}
 async fn physical_evidence() -> (HeaderMap, &'static str) {
     (
         super::private_lab_headers("application/json; charset=utf-8"),
@@ -451,10 +458,18 @@ pub(super) fn router() -> Router {
         .route("/lab/device-workbench", get(html))
         .route("/lab/device-workbench.css", get(css))
         .route("/lab/device-workbench.js", get(js))
+        .route(
+            "/lab/c320-first-real-inventory.js",
+            get(first_real_inventory_js),
+        )
         .route("/lab/device-physical-evidence", get(physical_evidence))
         .route(
             "/lab/c320-action-readiness",
             get(super::c320_actions_lab::list),
+        )
+        .route(
+            "/lab/c320-first-real-inventory",
+            get(super::c320_actions_lab::first_read),
         )
         .route(
             "/lab/c320-actions/{action}",
@@ -723,6 +738,52 @@ mod tests {
         assert_eq!(json["actual_firmware_filetype_alias_unresolved"], true);
         assert_eq!(json["production_auto_adoption_approved"], false);
         assert_eq!(json["independent_oob_olt_host_key_verified"], false);
+        assert_eq!(
+            json["verified_off_vps_encrypted_running_cli_reference_backup"],
+            true
+        );
+        assert_eq!(
+            json["verified_mac_restic_isolated_byte_identical_restore"],
+            true
+        );
+        assert_eq!(json["vendor_native_startup_config_restore_tested"], false);
+        assert_eq!(json["actual_local_account_privilege15_count"], 2);
+        assert_eq!(json["actual_local_restricted_account_proven"], false);
+        let reply = request(
+            app.clone(),
+            "GET",
+            "/lab/c320-first-real-inventory",
+            "",
+            false,
+        )
+        .await;
+        assert_eq!(reply.status(), StatusCode::OK);
+        assert_eq!(reply.headers()[header::CACHE_CONTROL], "no-store");
+        let first: Value =
+            serde_json::from_slice(&to_bytes(reply.into_body(), 8192).await.unwrap()).unwrap();
+        assert_eq!(
+            first["mode"],
+            "ACTUAL_HISTORICAL_OWNER_LAB_PHYSICAL_READ_NO_WORKER"
+        );
+        assert_eq!(first["observation_is_live"], false);
+        assert_eq!(first["cards"].as_array().unwrap().len(), 3);
+        assert_eq!(first["real_saas_device_adopted"], false);
+        assert_eq!(
+            first["owner_restic_isolated_byte_identical_restore_verified"],
+            true
+        );
+        assert_eq!(
+            request(
+                app.clone(),
+                "GET",
+                "/lab/c320-first-real-inventory.js",
+                "",
+                false
+            )
+            .await
+            .status(),
+            StatusCode::OK
+        );
         assert_eq!(json["actual_cards_reported"], 3);
         assert_eq!(json["network_actions"], 0);
         assert_eq!(json["worker_enabled"], false);

@@ -9,11 +9,12 @@
   <title>IPAT | Device Manager · Adoption & Inventory</title>
   <link rel="stylesheet" href="/lab/device-workbench.css">
   <script src="/lab/device-workbench.js" defer></script>
+  <script src="/lab/c320-first-real-inventory.js" defer></script>
 </head>
 <body>
 <a href="#main" class="skip">Ke konten</a>
-<div class="alert" role="alert"><strong>PERINGATAN PRD — BELUM SIAP ADOPSI PERANGKAT NYATA</strong>
-  Dashboard di halaman ini adalah laboratorium interaktif, bukan database ISP produksi. Tambah/hapus di sini hanya membuat data sintetis dalam memori server; restart menghapusnya. Status perangkat nyata, login MFA, adopsi OLT/ONT, SNMP/SSH/TR-069/USP serta firmware belum diaktifkan.
+<div class="alert" role="alert"><strong>PERINGATAN PRD — LAB FISIK TERBACA, ADOPSI OTOMATIS BELUM AKTIF</strong>
+  Dashboard ini LAB privat. ZTE C320 nyata SUDAH berhasil login dan dibaca lewat SSH/Telnet; backup konfigurasi CLI eksternal Restic terenkripsi dan pemulihan bit-identik SUDAH terverifikasi. Inventaris kandidat tambah/hapus tetap sintetis. Identitas POP independen, akun perangkat minimum-privilege, tenant MFA, worker otomatis, impor konfigurasi asli vendor dan fitur firmware belum dibuktikan.
 </div>
 <div class="shell">
   <aside class="sidebar" aria-label="Navigasi">
@@ -27,7 +28,7 @@
       <a href="#inventory">☷ &nbsp; Daftar perangkat</a>
       <a href="#readiness">◈ &nbsp; Adopsi & status</a>
     </nav>
-    <div class="sidebottom"><strong>LABORATORIUM PRIVAT</strong><p>Belum ada perangkat diadopsi. Kandidat DEV-01 pernah menjawab SSH tanpa autentikasi, tetapi identitasnya belum terverifikasi. Jangan isi serial, alamat IP asli atau kredensial di formulir demo.</p></div>
+    <div class="sidebottom"><strong>LABORATORIUM PRIVAT</strong><p>C320 LAB nyata: login dan pembacaan kartu/versi berhasil, backup eksternal terenkripsi sukses. ADOPSI OTOMATIS tetap terkunci. Jangan isi IP, serial atau password nyata di form demo.</p></div>
     <p class="copyright">IPAT · Developed by Mr. iPat</p>
   </aside>
   <div class="main">
@@ -40,26 +41,33 @@
       </div>
       <div class="metric-row" aria-label="Ringkasan perangkat">
         <article class="stat"><small>KANDIDAT DEMO</small><strong id="candidate-count">0</strong><span>Memori laboratorium</span></article>
-        <article class="stat"><small>PERANGKAT NYATA DIADOPSI</small><strong>0</strong><span>SSH kandidat teramati; belum terverifikasi</span></article>
-        <article class="stat"><small>TERVERIFIKASI</small><strong>0</strong><span>Tanpa telemetri asli</span></article>
-        <article class="stat"><small>KESIAPAN ADOPSI</small><strong class="amber">Terbatas</strong><span>Menunggu MFA dan bukti vendor</span></article>
+        <article class="stat"><small>PERANGKAT NYATA DIADOPSI</small><strong>0</strong><span>LAB SSH/Telnet terbaca; belum diadopsi</span></article>
+        <article class="stat"><small>TERVERIFIKASI</small><strong>0</strong><span>3 kartu terbaca historis, bukan telemetri</span></article>
+        <article class="stat"><small>KESIAPAN ADOPSI</small><strong class="amber">Terbatas</strong><span>Menunggu akun terbatas, MFA dan vendor</span></article>
       </div>
       <section class="panel" aria-labelledby="physical-network-heading">
         <div class="section-top"><div><span class="eyebrow">BUKTI HISTORIS, BUKAN TELEMETRI LIVE</span><h2 id="physical-network-heading">Jalur manajemen OLT kandidat DEV-01</h2></div><span class="pill amber-pill">BELUM ADOPSI</span></div>
-        <p>28 September 2026, sekitar 09.52 WIB: dari Mac operator, port manajemen yang diizinkan dapat dihubungi dan mengirim negosiasi Telnet. Negosiasi terbatas sebelumnya menampilkan penanda ZTE yang belum terautentikasi. Dari VPS IPAT, jalur yang sama mengalami timeout.</p>
-        <p><strong>Pemeriksaan terbaru:</strong> pada 28 September 2026, Mac operator juga memperoleh banner SSH privat ZTE_SSH.1.0 dan fingerprint RSA yang belum diverifikasi secara independen. Koneksi tersebut tidak menggunakan kredensial atau perintah OLT.</p>
-        <p><strong>Perhatian:</strong> catatan ini hanya bukti jaringan sesaat. OLT C320, firmware, identitas server dan status online perangkat BELUM terverifikasi. Tidak ada login, kata sandi, perubahan konfigurasi atau pembacaan OLT. Akses Telnet publik tidak aman untuk kredensial; gunakan jaringan manajemen privat terenkripsi atau protokol aman yang identitasnya telah diverifikasi.</p>
+        <p>29 September 2026: akses manajemen VPS menuju perangkat C320 LAB nyata telah berhasil dengan SSH terenkripsi serta Telnet sementara. Tiga kartu dan lima baris firmware benar-benar diamati, bukan simulasi.</p>
+        <p><strong>Backup diverifikasi:</strong> snapshot konfigurasi CLI 119.980 byte dipulihkan identik dari Restic terenkripsi pada Mac. Kunci RSA hanya dibandingkan antarobservasi jaringan, belum dibuktikan lewat konsol/inventaris independen.</p>
+        <p><strong>Perhatian:</strong> bukti ini HISTORIS, bukan monitoring aktif. Model C320 dan sebagian versi dibaca nyata, tetapi pemetaan firmware GTXK versus kartu GTGHK belum terverifikasi. Pemulihan konfigurasi NATIVE vendor, akun khusus, isolasi POP independen dan MFA/worker SaaS masih tertahan. Telnet hanya untuk pengujian sementara; jalur pilihan SSH terenkripsi.</p>
       </section>
       <section id="physical-readiness" class="panel" aria-labelledby="physical-readiness-title">
-        <div class="section-top"><div><span class="eyebrow">BUKTI FISIK / HISTORIS, BUKAN LIVE TELEMETRY</span><h2 id="physical-readiness-title">Pra-adopsi C320 — pemeriksaan tanpa kredensial</h2></div><span class="pill amber-pill">BELUM DIADOPSI</span></div>
-        <p>Hasil pemeriksaan SSH privat dicatat terpisah dari inventaris. Fingerprint yang ditemukan melalui koneksi belum membuktikan identitas OLT sampai diverifikasi melalui konsol/inventaris tepercaya.</p>
+        <div class="section-top"><div><span class="eyebrow">BUKTI FISIK / HISTORIS, BUKAN LIVE TELEMETRY</span><h2 id="physical-readiness-title">C320 — bukti LAB nyata dan gerbang SaaS produksi</h2></div><span class="pill amber-pill">BELUM DIADOPSI</span></div>
+        <p>SSH privat sudah dipakai login dan baca perangkat nyata; kunci RSA cocok dengan observasi jaringan, bukan pengesahan independen dari konsol. Backup terenkripsi Restic teruji byte-identik, namun pemulihan native vendor belum.</p>
         <p id="physical-evidence-status" role="status" aria-live="polite">Memverifikasi bukti lokal yang tersimpan...</p>
         <div id="physical-evidence-gates" class="steps" aria-label="Syarat pembacaan perangkat asli"></div>
-        <div class="separation"><b>JANGAN JALANKAN ADOPSI OTOMATIS</b><p>OLT diasumsikan melayani pelanggan aktif. Tidak ada tombol login, update firmware, atau penerapan tunnel dari pratinjau ini.</p></div>
+        <div class="separation"><b>JANGAN JALANKAN ADOPSI OTOMATIS</b><p>Owner memastikan OLT LAB tanpa pelanggan, tetapi SOP mewajibkan perlakuan LIVE. Tidak ada tombol login akun bawaan, ubah konfigurasi, upgrade firmware atau penerapan tunnel dari pratinjau.</p></div>
+      </section>
+      <section class="panel" id="c320-real-first-read" aria-labelledby="c320-real-first-read-title">
+        <div class="section-top"><div><span class="eyebrow">BUKTI FISIK LAB HISTORIS</span>
+          <h2 id="c320-real-first-read-title">Inventaris nyata ZTE C320 — pembacaan pertama</h2></div>
+          <span class="pill amber-pill">BELUM ADOPSI OTOMATIS</span></div>
+        <p id="c320-real-inventory-status" role="status" aria-live="polite">Memeriksa bukti privat, bukan polling perangkat...</p>
+        <div id="c320-real-inventory" class="steps" aria-label="Tiga kartu fisik historis"></div>
       </section>
       <section class="panel" id="c320-operations" aria-labelledby="c320-operations-title">
-        <div class="section-top"><div><span class="eyebrow">R9.19 / KATALOG AKSI OLT</span><h2 id="c320-operations-title">Fungsi OLT ZTE C320 — kesiapan sebenarnya</h2></div><span class="pill amber-pill">AKSI FISIK TERKUNCI</span></div>
-        <p>Alat Rust telah menguji validasi hasil pembacaan kartu dan firmware dalam lingkungan terisolasi. Katalog ini menjelaskan kesiapan setiap fungsi, tetapi tidak memberikan akses perangkat sampai identitas OLT, akun baca-saja, dan persetujuan produksi tervalidasi. IPAT memprioritaskan SSH langsung lewat jaringan manajemen yang tersedia tanpa mewajibkan tunnel.</p>
+        <div class="section-top"><div><span class="eyebrow">R9.33 / KATALOG AKSI OLT</span><h2 id="c320-operations-title">Fungsi OLT ZTE C320 — kesiapan sebenarnya</h2></div><span class="pill amber-pill">AKSI FISIK TERKUNCI</span></div>
+        <p>OLT nyata telah dibaca melalui SSH terenkripsi. Parser Rust telah mengolah snapshot aktual kartu/versi; GTGHK versus GTXK dan MVR PRAM masih perlu verifikasi vendor. Backup CLI eksternal telah dipulihkan identik dari Restic. Aksi otomatis tetap terkunci sampai identitas, akun khusus terbatas, audit dan izin tenant tervalidasi.</p>
         <button id="refresh-c320-actions" type="button" class="secondary">Periksa fungsi yang tersedia</button>
         <p id="c320-actions-status" class="form-notice" role="status" aria-live="polite">Memuat kesiapan dari server, bukan membaca perangkat.</p>
         <div id="c320-actions-list" class="steps" aria-label="Fitur perangkat dan persyaratan"></div>

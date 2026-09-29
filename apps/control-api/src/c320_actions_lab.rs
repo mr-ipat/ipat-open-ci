@@ -20,6 +20,7 @@ fn readiness() -> Value {
     let mut catalog = json!({
       "target":"DEV-01",
       "mode":"PHYSICAL_C320_PRE_ADOPTION_ACTION_CATALOG",
+      "lab_proof_stage":"AUTHENTICATED_HARDWARE_READ_AND_OFFVPS_ENCRYPTED_BACKUP_VERIFIED",
       "adoption_state":"AUTHENTICATED_LAB_READ_OBSERVED_ADOPTION_PENDING",
       "transport":"OWNER_APPROVED_AUTHENTICATED_LAB_SSH_AND_TELNET_FIRST_READ",
       "tested_legacy_ssh_profile":"RSA_AES128CBC_GROUP14SHA256_ONLY",
@@ -83,6 +84,18 @@ fn readiness() -> Value {
       "temporary_default_test_credential_needs_rotation":true,
       "lab_manual_successful_read_commands":5,
       "lab_unsupported_read_command_rejected":1,
+      "verified_off_vps_encrypted_running_cli_reference_backup":true,
+      "verified_mac_restic_isolated_byte_identical_restore":true,
+      "verified_backup_at_utc":"2026-09-29T05:49:58+00:00",
+      "vendor_native_startup_config_restore_tested":false,
+      "separate_geo_recovery_repository_verified":false,
+      "actual_local_account_privilege15_count":2,
+      "actual_local_restricted_account_proven":false,
+      "vendor_readonly_role_isolation_verified":false,
+      "actual_live_manual_alarm_cli_syntax_verified":true,
+      "actual_live_active_alarms_semantically_validated":false,
+      "passwordless_ssh_service_account_verified":false,
+      "physical_source_independent_console_verified":false,
       "production_auto_adoption_approved":false,
     });
     catalog
@@ -91,6 +104,59 @@ fn readiness() -> Value {
         .extend(lab.as_object().expect("known static evidence").clone());
     catalog
 }
+/// Historical, SANITIZED source-backed first physical LAB C320 inventory.
+/// Static release evidence ONLY, not polling or a production device record.
+fn first_real_inventory() -> Value {
+    json!({
+        "target":"DEV-01",
+        "mode":"ACTUAL_HISTORICAL_OWNER_LAB_PHYSICAL_READ_NO_WORKER",
+        "recorded_date":"2026-09-29",
+        "observation_is_live":false,
+        "raw_captures_private_only":true,
+        "device_identity_independently_attested":false,
+        "real_ssh_first_read_authenticated":true,
+        "owner_declares_disconnected_no_customers_lab":true,
+        "cards":[
+          {"slot":"1/1/1","configured":"GTGH","physical":"GTGHK",
+           "card_reported_status":"INSERVICE","reported_mvr_filetype":"GTXK",
+           "reported_mvr_version":"V2.1.0","mvr_card_alias_verified":false},
+          {"slot":"1/1/3","configured":"PRAM","physical":"PRAM",
+           "card_reported_status":"INSERVICE","reported_mvr_filetype":null,
+           "reported_mvr_version":null,"mvr_card_alias_verified":false},
+          {"slot":"1/1/4","configured":"SMXA","physical":"SMXA",
+           "card_reported_status":"INSERVICE","reported_mvr_filetype":"SMXA",
+           "reported_mvr_version":"V2.1.0","mvr_card_alias_verified":true}
+        ],
+        "reported_version_rows_total":5,
+        "firmware_inventory_fully_reconciled":false,
+        "owner_off_vps_encrypted_configuration_reference_verified":true,
+        "owner_restic_isolated_byte_identical_restore_verified":true,
+        "backup_verified_at_utc":"2026-09-29T05:49:58+00:00",
+        "config_reference_is_vendor_native_restore_file":false,
+        "device_native_restore_rehearsed":false,
+        "existing_privilege15_account_count":2,
+        "dedicated_verified_limited_role_account_exists":false,
+        "production_worker_enabled":false,
+        "real_saas_device_adopted":false
+    })
+}
+
+pub(super) async fn first_read(
+    headers: HeaderMap,
+) -> Result<(HeaderMap, Json<Value>), (StatusCode, HeaderMap, Json<Value>)> {
+    if !super::device_workbench_lab::demo_csrf_read(&headers) {
+        return Err((
+            StatusCode::FORBIDDEN,
+            super::private_lab_headers("application/json; charset=utf-8"),
+            Json(json!({"error":"PRIVATE_LOCAL_LAB_ONLY"})),
+        ));
+    }
+    Ok((
+        super::private_lab_headers("application/json; charset=utf-8"),
+        Json(first_real_inventory()),
+    ))
+}
+
 pub(super) async fn list(
     headers: HeaderMap,
 ) -> Result<(HeaderMap, Json<Value>), (StatusCode, HeaderMap, Json<Value>)> {
@@ -117,6 +183,29 @@ pub(super) async fn reject_execute() -> (StatusCode, HeaderMap, Json<Value>) {
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn historically_observed_first_real_c320_inventory_never_claims_auto_adoption() {
+        let r = first_real_inventory();
+        assert_eq!(r["recorded_date"], "2026-09-29");
+        assert_eq!(r["observation_is_live"], false);
+        assert_eq!(
+            r["owner_restic_isolated_byte_identical_restore_verified"],
+            true
+        );
+        assert_eq!(r["device_native_restore_rehearsed"], false);
+        assert_eq!(r["dedicated_verified_limited_role_account_exists"], false);
+        assert_eq!(r["real_saas_device_adopted"], false);
+        assert_eq!(r["reported_version_rows_total"], 5);
+        let cards = r["cards"].as_array().unwrap();
+        assert_eq!(cards.len(), 3);
+        assert!(cards
+            .iter()
+            .all(|c| c["card_reported_status"] == "INSERVICE"));
+        assert_eq!(cards[0]["mvr_card_alias_verified"], false);
+        assert_eq!(cards[1]["reported_mvr_version"], Value::Null);
+        assert_eq!(cards[2]["mvr_card_alias_verified"], true);
+    }
+
     #[test]
     fn incomplete_real_hardware_proof_keeps_entire_catalog_disabled() {
         let r = readiness();
@@ -152,6 +241,20 @@ mod tests {
         assert_eq!(r["actual_version_rows_reported"], 5);
         assert_eq!(r["actual_firmware_filetype_alias_unresolved"], true);
         assert_eq!(r["actual_pram_running_mvr_not_reported"], true);
+        assert_eq!(
+            r["verified_off_vps_encrypted_running_cli_reference_backup"],
+            true
+        );
+        assert_eq!(
+            r["verified_mac_restic_isolated_byte_identical_restore"],
+            true
+        );
+        assert_eq!(r["vendor_native_startup_config_restore_tested"], false);
+        assert_eq!(r["actual_local_account_privilege15_count"], 2);
+        assert_eq!(r["actual_local_restricted_account_proven"], false);
+        assert_eq!(r["actual_live_manual_alarm_cli_syntax_verified"], true);
+        assert_eq!(r["actual_live_active_alarms_semantically_validated"], false);
+        assert_eq!(r["production_auto_adoption_approved"], false);
         assert_eq!(r["device_adopted"], false);
         assert_eq!(r["independent_reviewer_approved"], false);
         assert_eq!(r["independent_oob_olt_host_key_verified"], false);

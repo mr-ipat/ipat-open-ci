@@ -94,5 +94,20 @@
     "adopted": false,
     "device_commands_written": 0,
     "configuration_changes": 0
+  },
+  "r933_owner_off_vps_recovery": {
+    "verified_on": "2026-09-29T05:49:58+00:00",
+    "actual_encrypted_off_vps_restic_snapshot_verified": true,
+    "actual_isolated_restic_reference_byte_restore_identical": true,
+    "actual_temporary_restore_deleted": true,
+    "actual_source_cli_segment_bytes": 119980,
+    "actual_vendor_native_config_import_verified": false,
+    "actual_hardware_recovery_drill_passed": false,
+    "actual_privilege_15_accounts_observed": 2,
+    "actual_restricted_device_identity_proven": false,
+    "actual_valid_vendor_alarm_read_syntax_observed": true,
+    "actual_current_alarms_semantically_validated": false,
+    "real_saas_auto_adopted": false,
+    "actual_device_config_writes_this_milestone": 0
   }
 }

@@ -112,3 +112,13 @@ actual local file receipt, new sensitive R9.31 operational docs,
 privileged session logs and vendor/customer metadata are EXCLUDED.
 Actual physical backup and standalone restore claims cannot be
 inferred from this public CI. Do NOT upload actual device backups.
+
+R9.33 protected real owner-Mac verified encrypted off-VPS C320
+backup and real sanitized historical board layout are ONLY presented
+as static, synthetic-shaped code fixtures in PUBLIC mirror.
+PRIVATE actual Restic snapshot ID, full config and credential,
+raw CLI, owner-specific documents, actual device IP/network RSA
+fingerprints are NOT published. Public CI exercises safety policy
+and parser logic, NEVER real C320 owner credentials or remote actions.
+A passing public CI does not constitute vendor-native recoverability,
+production tenant authorization or automatic physical adoption.
